@@ -24,11 +24,9 @@ public class CityDataImporter {
     public static void importData(Context context, String assetFilePath) throws
             IOException, RemoteException, OperationApplicationException {
 
+        ArrayList<ContentProviderOperation> ops = new ArrayList<>();
         InputStream is = context.getAssets().open(assetFilePath);
         BufferedReader reader = new BufferedReader(new InputStreamReader(is));
-
-        ArrayList<ContentProviderOperation> ops = new ArrayList<>();
-
         String line;
         while (null != (line = reader.readLine())) {
             if (line.startsWith("#"))
@@ -46,7 +44,6 @@ public class CityDataImporter {
             filters = ObjectArrays.concat(filters, ccounty);
             String filtersStr = TextUtils.join(",", filters);
 
-//            Log.v(TAG, "importData: " + id);
             ops.add(ContentProviderOperation.newInsert(WeatherContract.City.CONTENT_URI)
                     .withValue(WeatherContract.City._ID, id)
                     .withValue(WeatherContract.City.FILTERS, filtersStr)
@@ -55,6 +52,7 @@ public class CityDataImporter {
                     .withValue(WeatherContract.City.PROVINCE, province)
                     .build());
         }
+        is.close();
 
         context.getContentResolver().applyBatch(WeatherContract.CONTENT_AUTHORITY, ops);
         context.getContentResolver().notifyChange(WeatherContract.City.CONTENT_URI, null);

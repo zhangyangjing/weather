@@ -41,7 +41,7 @@ public class CityFilter extends ContentObserver implements Runnable {
         }, 800);
     }
 
-    public Set<String> filter(String filter) {
+    public synchronized Set<String> filter(String filter) {
         return mTrieTree.get(filter);
     }
 
@@ -59,25 +59,33 @@ public class CityFilter extends ContentObserver implements Runnable {
 
     @Override
     public void run() {
-        if (DEBUG) Log.v(TAG, "start build trie tree");
-        long start = System.currentTimeMillis();
+        long debugStart;
+        if (DEBUG) {
+            Log.v(TAG, "start build trie tree");
+            debugStart = System.currentTimeMillis();
+        }
 
         Cursor cursor = mContext.getContentResolver().query(
                 WeatherContract.City.CONTENT_URI,
                 new String[]{WeatherContract.City._ID, WeatherContract.City.FILTERS},
                 null, null, null);
 
-        mTrieTree = new TrieTree<>();
+        TrieTree<String> newTrieTree = new TrieTree<>();
         while (cursor.moveToNext()) {
             String id = cursor.getString(cursor.getColumnIndex(WeatherContract.City._ID));
             String filters = cursor.getString(cursor.getColumnIndex(WeatherContract.City.FILTERS));
             for (String filter : filters.split(","))
-                mTrieTree.add(filter, id);
+                newTrieTree.add(filter, id);
         }
         cursor.close();
+        synchronized (this) {
+            mTrieTree = newTrieTree;
+        }
 
-        long duration = System.currentTimeMillis() - start;
-        if (DEBUG) Log.v(TAG, "build trie tree use time: " + duration);
+        if (DEBUG) {
+            long duration = System.currentTimeMillis() - debugStart;
+            Log.v(TAG, "build trie tree use time: " + duration);
+        }
 
         mContext.getContentResolver().notifyChange(WeatherContract.City.CONTENT_URI, this);
     }

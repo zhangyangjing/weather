@@ -20,4 +20,4 @@ public enum WeatherUriEnum {
                 WeatherContract.makeContentType(contentTypeId);
         this.table = table;
     }
-    }
+}
