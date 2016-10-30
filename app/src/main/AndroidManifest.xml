@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.zhangyangjing.weather">
+          package="com.zhangyangjing.weather">
 
     <application
         android:allowBackup="true"
@@ -12,20 +12,29 @@
             android:name=".ActivityMain"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
 
         <provider
             android:name=".provider.weather.WeatherProvider"
-            android:authorities="com.zhangyangjing.weather" />
+            android:authorities="com.zhangyangjing.weather"/>
 
         <service
             android:name=".service.DataBootstrapService"
-            android:exported="false"></service>
+            android:exported="false"/>
+
+        <activity
+            android:name=".ActivityGuide"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="@string/title_activity_guide"
+            android:theme="@style/FullscreenTheme">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity>
+
+        <meta-data android:name="city_data_version" android:resource="@integer/city_data_version" />
     </application>
 
 </manifest>

@@ -10,15 +10,15 @@ import android.preference.PreferenceManager;
 public class SettingsUtil {
     private static final String TAG = SettingsUtil.class.getSimpleName();
 
-    private static final String PREF_DATA_BOOTSTRAP_DONE = "data_bootstrap_done";
+    private static final String PREF_DATA_BOOTSTRAP_DONE = "city_data_version";
 
 
-    public static void markDataBootstrapDone(Context context) {
+    public static void getCitydataVersion(Context context) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
         sp.edit().putBoolean(PREF_DATA_BOOTSTRAP_DONE, true).commit();
     }
 
-    public static boolean isDataBootstrapDone(Context context) {
+    public static boolean setCitydataVersion(Context context) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
         return sp.getBoolean(PREF_DATA_BOOTSTRAP_DONE, false);
     }

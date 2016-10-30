@@ -30,15 +30,10 @@ public class CityFilter extends ContentObserver implements Runnable {
         HandlerThread thread = new HandlerThread("city_filter");
         thread.start();
         mHandler = new Handler(thread.getLooper());
-
-        mHandler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                mHandler.post(CityFilter.this);
-                mContext.getContentResolver().registerContentObserver(
-                        WeatherContract.City.CONTENT_URI, false, CityFilter.this);
-            }
-        }, 800);
+        mHandler.post(this);
+        
+        mContext.getContentResolver().registerContentObserver(
+                WeatherContract.City.CONTENT_URI, false, CityFilter.this);
     }
 
     public synchronized Set<String> filter(String filter) {
