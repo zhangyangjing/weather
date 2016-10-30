@@ -7,6 +7,7 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 
 import com.zhangyangjing.weather.service.DataBootstrapService;
@@ -73,14 +74,20 @@ public class ActivityGuide extends AppCompatActivity {
 
     private void startMainActivityAndFinish() {
         startActivity(new Intent(this, ActivityMain.class));
-        unregisterReceiver(myBroadcastReceiver);
-        mRegiested = false;
+        if (mRegiested) {
+            unregisterReceiver(myBroadcastReceiver);
+            mRegiested = false;
+        }
         finish();
     }
 
     private class MyBroadcastReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
+            Log.v(TAG, "onReceive:" + intent.getAction());
+            if (false == intent.getAction().equals(DataBootstrapService.ACTION_IMPORT_FINISH))
+                return;
+
             mBGFinish = true;
             if (true == mVisible)
                 startMainActivityAndFinishIFNeed();

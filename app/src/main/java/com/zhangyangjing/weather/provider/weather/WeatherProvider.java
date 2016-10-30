@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.MatrixCursor;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.net.Uri;
+import android.os.Process;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.Log;
@@ -25,7 +26,8 @@ public class WeatherProvider extends ContentProvider {
 
     @Override
     public boolean onCreate() {
-        mCityFilter = new CityFilter(getContext());
+        if (DEBUG) Log.v(TAG, String.format("new WeatherProvider tname:%s tid:%d pid:%d id:%s",
+                Thread.currentThread().getName(), Process.myTid(), Process.myPid(), this));
         mOpenHelper = new WeatherDatabase(getContext());
         mWeatherProviderUriMatcher = new WeatherProviderUriMatcher();
         return false;
@@ -35,6 +37,9 @@ public class WeatherProvider extends ContentProvider {
     @Override
     public Cursor query(Uri uri, String[] projection, String selection,
                         String[] selectionArgs, String sortOrder) {
+        if (DEBUG) Log.d(TAG, "query() called with: uri = [" + uri + "], projection = ["
+                + projection + "], selection = [" + selection + "], selectionArgs = ["
+                + selectionArgs + "], sortOrder = [" + sortOrder + "]");
 
         WeatherUriEnum weatherUriEnum = mWeatherProviderUriMatcher.matchUri(uri);
         switch (weatherUriEnum) {
@@ -81,15 +86,22 @@ public class WeatherProvider extends ContentProvider {
 
     @Override
     public int delete(Uri uri, String selection, String[] selectionArgs) {
+        if (DEBUG) Log.d(TAG, "delete() called with: uri = [" + uri + "], selection = ["
+                + selection + "], selectionArgs = [" + selectionArgs + "]");
         return 0;
     }
 
     @Override
     public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
+        if (DEBUG) Log.d(TAG, "update() called with: uri = [" + uri + "], values = [" + values
+                + "], selection = [" + selection + "], selectionArgs = [" + selectionArgs + "]");
         return 0;
     }
 
     private Cursor doQueryCityWithFilter(String[] projection, String filter) {
+        if (null == mCityFilter)
+            mCityFilter = new CityFilter(getContext());
+
         Set<String> result = mCityFilter.filter(filter);
         if (0 == result.size())
             return new MatrixCursor(null == projection ? new String[]{} : projection);

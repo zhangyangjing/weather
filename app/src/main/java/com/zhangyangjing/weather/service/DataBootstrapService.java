@@ -15,7 +15,7 @@ import static android.preference.PreferenceManager.getDefaultSharedPreferences;
 public class DataBootstrapService extends IntentService {
     private static final String TAG = DataBootstrapService.class.getSimpleName();
 
-    private static final Boolean DEBUG = false;
+    private static final Boolean DEBUG = true;
     private static final String KEY_CITY_DATA_VERSION = "city_data_version";
     public static final String ACTION_IMPORT_FINISH = "import_finish";
 
@@ -40,14 +40,14 @@ public class DataBootstrapService extends IntentService {
     }
 
     private static int getNewVersion(Context context) {
-        ApplicationInfo ai = null;
         try {
-            ai = context.getPackageManager().getApplicationInfo(context.getPackageName(), PackageManager.GET_META_DATA);
+            ApplicationInfo ai = context.getPackageManager().getApplicationInfo(
+                    context.getPackageName(), PackageManager.GET_META_DATA);
+            return ai.metaData.getInt("city_data_version", -1);
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
             return -1;
         }
-        return ai.metaData.getInt("city_data_version", -1);
     }
 
     @Override
