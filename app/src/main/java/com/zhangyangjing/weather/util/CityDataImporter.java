@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.OperationApplicationException;
 import android.os.RemoteException;
 import android.text.TextUtils;
-import android.util.Log;
 import android.util.TimingLogger;
 
 import com.google.common.collect.ObjectArrays;
@@ -27,9 +26,6 @@ public class CityDataImporter {
 
     public static void importData(Context context, String assetFilePath) throws
             IOException, RemoteException, OperationApplicationException {
-        if (DEBUG) Log.d(TAG, "importData() called with: context = [" + context + "], assetFilePath = [" + assetFilePath + "]");
-
-
         TimingLogger timings;
         if (DEBUG) timings = new TimingLogger(TAG, "importCityData");
 

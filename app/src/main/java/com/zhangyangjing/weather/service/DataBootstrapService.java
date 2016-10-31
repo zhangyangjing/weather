@@ -53,11 +53,7 @@ public class DataBootstrapService extends IntentService {
     @Override
     protected void onHandleIntent(Intent intent) {
         try {
-            long debugStartTime = 0;
-            if (DEBUG) {
-                Log.v(TAG, "start data bootstrap");
-                debugStartTime = System.currentTimeMillis();
-            }
+            if (DEBUG) Log.d(TAG, "onHandleIntent() called with: intent = [" + intent + "]");
 
             CityDataImporter.importData(this, "city.data");
 
@@ -67,11 +63,6 @@ public class DataBootstrapService extends IntentService {
 
             Intent broadcastIntent = new Intent(ACTION_IMPORT_FINISH);
             sendBroadcast(broadcastIntent);
-
-            if (DEBUG) {
-                long duration = System.currentTimeMillis() - debugStartTime;
-                Log.v(TAG, "data bootstrap use time: " + duration);
-            }
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -6,7 +6,6 @@ import android.database.Cursor;
 import android.database.MatrixCursor;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.net.Uri;
-import android.os.Process;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.Log;
@@ -26,8 +25,6 @@ public class WeatherProvider extends ContentProvider {
 
     @Override
     public boolean onCreate() {
-        if (DEBUG) Log.v(TAG, String.format("new WeatherProvider tname:%s tid:%d pid:%d id:%s",
-                Thread.currentThread().getName(), Process.myTid(), Process.myPid(), this));
         mOpenHelper = new WeatherDatabase(getContext());
         mWeatherProviderUriMatcher = new WeatherProviderUriMatcher();
         return false;
@@ -102,8 +99,6 @@ public class WeatherProvider extends ContentProvider {
         if (DEBUG) Log.d(TAG, "doQueryCityWithFilter() called with: projection = ["
                 + projection + "], selection = [" + selection + "], selectionArgs = ["
                 + selectionArgs + "], sortOrder = [" + sortOrder + "], filter = [" + filter + "]");
-
-        Log.v(TAG, String.format("doQueryCityWithFilter pid:%d tid:%d pname:%s", Process.myPid(), Process.myTid(), Thread.currentThread().getName()));
 
         synchronized (this) {
             if (null == mCityFilter)

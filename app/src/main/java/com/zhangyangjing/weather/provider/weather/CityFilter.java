@@ -5,7 +5,7 @@ import android.database.ContentObserver;
 import android.database.Cursor;
 import android.os.Handler;
 import android.os.HandlerThread;
-import android.util.Log;
+import android.util.TimingLogger;
 
 import com.zhangyangjing.weather.util.TrieTree;
 
@@ -54,16 +54,15 @@ public class CityFilter extends ContentObserver implements Runnable {
 
     @Override
     public void run() {
-        long debugStart;
-        if (DEBUG) {
-            Log.v(TAG, "start build trie tree");
-            debugStart = System.currentTimeMillis();
-        }
+        TimingLogger timings;
+        if (DEBUG) timings = new TimingLogger(TAG, "build trie tree");
 
         Cursor cursor = mContext.getContentResolver().query(
                 WeatherContract.City.CONTENT_URI,
                 new String[]{WeatherContract.City._ID, WeatherContract.City.FILTERS},
                 null, null, null);
+
+        if (DEBUG) timings.addSplit("query");
 
         TrieTree<String> newTrieTree = new TrieTree<>();
         while (cursor.moveToNext()) {
@@ -77,10 +76,8 @@ public class CityFilter extends ContentObserver implements Runnable {
             mTrieTree = newTrieTree;
         }
 
-        if (DEBUG) {
-            long duration = System.currentTimeMillis() - debugStart;
-            Log.v(TAG, "build trie tree use time: " + duration);
-        }
+        if (DEBUG) timings.addSplit("build");
+        if (DEBUG) timings.dumpToLog();
 
         mContext.getContentResolver().notifyChange(WeatherContract.City.CONTENT_URI, this);
     }
