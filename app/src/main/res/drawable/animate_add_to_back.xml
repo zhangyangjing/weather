@@ -1,0 +1,6 @@
+<animated-vector xmlns:android="http://schemas.android.com/apk/res/android"
+                 android:drawable="@drawable/ic_add_back_24dp" >
+    <target
+        android:name="add_to_back"
+        android:animation="@animator/path_morph" />
+</animated-vector>

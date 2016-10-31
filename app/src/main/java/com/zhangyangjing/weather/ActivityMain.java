@@ -1,8 +1,12 @@
 package com.zhangyangjing.weather;
 
+import android.annotation.TargetApi;
 import android.database.Cursor;
+import android.graphics.drawable.AnimatedVectorDrawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
@@ -19,7 +23,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.zhangyangjing.weather.provider.weather.WeatherContract;
-import com.zhangyangjing.weather.service.DataBootstrapService;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -63,9 +66,13 @@ public class ActivityMain extends AppCompatActivity {
         return true;
     }
 
+    @TargetApi(Build.VERSION_CODES.M)
     @OnClick(R.id.fab)
     public void onClick(View v) {
-        DataBootstrapService.startDatastrapIfNecessary(this);
+        FloatingActionButton fab = (FloatingActionButton) v;
+        AnimatedVectorDrawable d = (AnimatedVectorDrawable) fab.getDrawable();
+        d.reset();
+        d.start();
     }
 
     class MyQueryTextListener implements SearchView.OnQueryTextListener {
