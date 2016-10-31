@@ -27,7 +27,6 @@ public class CityFilter extends ContentObserver implements Runnable {
         mContext = context;
         mTrieTree = new TrieTree<>();
 
-        Log.v(TAG, "new CityFilter");
         HandlerThread thread = new HandlerThread("city_filter");
         thread.start();
         mHandler = new Handler(thread.getLooper());
@@ -44,9 +43,6 @@ public class CityFilter extends ContentObserver implements Runnable {
     @Override
     public void onChange(boolean selfChange) {
         super.onChange(selfChange);
-        if (DEBUG) {
-            Log.d(TAG, "onChange() called with: selfChange = [" + selfChange + "]");
-        }
         mHandler.removeCallbacks(this);
         mHandler.post(this);
     }

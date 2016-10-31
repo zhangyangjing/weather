@@ -48,12 +48,11 @@ public class WeatherProvider extends ContentProvider {
                 break;
             case CITY:
                 String filter = WeatherContract.City.getSearchFilter(uri);
-                if (null == filter) {
-                    return mOpenHelper.getReadableDatabase().query(weatherUriEnum.table,
-                            projection, selection, selectionArgs, null, null, sortOrder);
-                } else {
-                    return doQueryCityWithFilter(projection, filter);
-                }
+                Cursor cursor = doQueryCityWithFilter(projection,
+                        selection, selectionArgs, sortOrder, filter);
+                cursor.setNotificationUri(getContext().getContentResolver(),
+                        WeatherContract.City.CONTENT_URI);
+                return cursor;
         }
         return null;
     }
@@ -98,15 +97,30 @@ public class WeatherProvider extends ContentProvider {
         return 0;
     }
 
-    private Cursor doQueryCityWithFilter(String[] projection, String filter) {
-        if (null == mCityFilter)
-            mCityFilter = new CityFilter(getContext());
+    private Cursor doQueryCityWithFilter(String[] projection, String selection,
+                                         String[] selectionArgs, String sortOrder, String filter) {
+        if (DEBUG) Log.d(TAG, "doQueryCityWithFilter() called with: projection = ["
+                + projection + "], selection = [" + selection + "], selectionArgs = ["
+                + selectionArgs + "], sortOrder = [" + sortOrder + "], filter = [" + filter + "]");
+
+        Log.v(TAG, String.format("doQueryCityWithFilter pid:%d tid:%d pname:%s", Process.myPid(), Process.myTid(), Thread.currentThread().getName()));
+
+        synchronized (this) {
+            if (null == mCityFilter)
+                mCityFilter = new CityFilter(getContext());
+        }
+
+        if (TextUtils.isEmpty(filter))
+            return mOpenHelper.getReadableDatabase().query(WeatherUriEnum.CITY.table,
+                    projection, selection, selectionArgs, null, null, sortOrder);
+
 
         Set<String> result = mCityFilter.filter(filter);
+        if (DEBUG) Log.v(TAG, "doQueryCityWithFilter result:" + result);
+
         if (0 == result.size())
             return new MatrixCursor(null == projection ? new String[]{} : projection);
 
-        if (DEBUG) Log.v(TAG, "doQueryCityWithFilter: " + filter + " " + result);
         String queryStr = String.format("SELECT * FROM %s WHERE %S IN ('%S')",
                 WeatherUriEnum.CITY.table, WeatherContract.City._ID, TextUtils.join("','", result));
         return mOpenHelper.getReadableDatabase().rawQuery(queryStr, null);

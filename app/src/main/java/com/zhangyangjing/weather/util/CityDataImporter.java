@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.OperationApplicationException;
 import android.os.RemoteException;
 import android.text.TextUtils;
+import android.util.Log;
+import android.util.TimingLogger;
 
 import com.google.common.collect.ObjectArrays;
 import com.zhangyangjing.weather.provider.weather.WeatherContract;
@@ -21,8 +23,15 @@ import java.util.ArrayList;
 public class CityDataImporter {
     private static final String TAG = CityDataImporter.class.getSimpleName();
 
+    private static final boolean DEBUG = false;
+
     public static void importData(Context context, String assetFilePath) throws
             IOException, RemoteException, OperationApplicationException {
+        if (DEBUG) Log.d(TAG, "importData() called with: context = [" + context + "], assetFilePath = [" + assetFilePath + "]");
+
+
+        TimingLogger timings;
+        if (DEBUG) timings = new TimingLogger(TAG, "importCityData");
 
         ArrayList<ContentProviderOperation> ops = new ArrayList<>();
         InputStream is = context.getAssets().open(assetFilePath);
@@ -54,7 +63,12 @@ public class CityDataImporter {
         }
         is.close();
 
+        if (DEBUG) timings.addSplit("build ops");
+
         context.getContentResolver().applyBatch(WeatherContract.CONTENT_AUTHORITY, ops);
         context.getContentResolver().notifyChange(WeatherContract.City.CONTENT_URI, null);
+
+        if (DEBUG) timings.addSplit("apply ops");
+        if (DEBUG) timings.dumpToLog();
     }
 }

@@ -12,6 +12,7 @@ import android.view.View;
 
 import com.zhangyangjing.weather.service.DataBootstrapService;
 
+import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class ActivityGuide extends AppCompatActivity {
@@ -33,6 +34,7 @@ public class ActivityGuide extends AppCompatActivity {
         }
 
         setContentView(R.layout.activity_guide);
+        ButterKnife.bind(this);
 
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(DataBootstrapService.ACTION_IMPORT_FINISH);
@@ -56,7 +58,6 @@ public class ActivityGuide extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-
         if (mRegiested)
             unregisterReceiver(myBroadcastReceiver);
     }

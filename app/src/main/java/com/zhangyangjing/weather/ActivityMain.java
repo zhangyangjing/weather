@@ -12,6 +12,7 @@ import android.support.v7.widget.SearchView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,6 +27,8 @@ import butterknife.OnClick;
 
 public class ActivityMain extends AppCompatActivity {
     private static final String TAG = ActivityMain.class.getSimpleName();
+
+    private static final boolean DEBUG = false;
     private static final String KEY_FILTER = "filter";
 
     @BindView(R.id.recycler_list)
@@ -92,11 +95,13 @@ public class ActivityMain extends AppCompatActivity {
 
         @Override
         public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
+            if (DEBUG) Log.d(TAG, "onLoadFinished() called with: loader = [" + loader + "], cursor = [" + cursor + "]");
             mAdapter.swapCursor(cursor);
         }
 
         @Override
         public void onLoaderReset(Loader loader) {
+            if (DEBUG) Log.d(TAG, "onLoaderReset() called with: loader = [" + loader + "]");
             mAdapter.swapCursor(null);
         }
 
