@@ -1,15 +1,20 @@
 package com.zhangyangjing.weather.provider.weather;
 
 import android.content.ContentProvider;
+import android.content.ContentProviderOperation;
+import android.content.ContentProviderResult;
 import android.content.ContentValues;
+import android.content.OperationApplicationException;
 import android.database.Cursor;
 import android.database.MatrixCursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.net.Uri;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.Log;
 
+import java.util.ArrayList;
 import java.util.Set;
 
 /**
@@ -92,6 +97,20 @@ public class WeatherProvider extends ContentProvider {
         if (DEBUG) Log.d(TAG, "update() called with: uri = [" + uri + "], values = [" + values
                 + "], selection = [" + selection + "], selectionArgs = [" + selectionArgs + "]");
         return 0;
+    }
+
+    @Override
+    public ContentProviderResult[] applyBatch(ArrayList<ContentProviderOperation> operations)
+            throws OperationApplicationException {
+        SQLiteDatabase db = mOpenHelper.getWritableDatabase();
+        db.beginTransaction();
+        try{
+            ContentProviderResult[]results = super.applyBatch(operations);
+            db.setTransactionSuccessful();
+            return results;
+        }finally {
+            db.endTransaction();
+        }
     }
 
     private Cursor doQueryCityWithFilter(String[] projection, String selection,
