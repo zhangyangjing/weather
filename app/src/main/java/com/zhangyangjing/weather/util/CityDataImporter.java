@@ -40,19 +40,19 @@ public class CityDataImporter {
             String[] segs = line.split(" ");
             String id = segs[0];
             String abbr = segs[1];
-            String county = segs[2];
-            String ccounty = segs[3];
+            String abbr2 = segs[2];
+            String district = segs[3];
             String city = segs[4];
             String province = segs[5];
 
-            String[] filters = ObjectArrays.concat(abbr.split(","), county.split(","), String.class);
-            filters = ObjectArrays.concat(filters, ccounty);
+            String[] filters = ObjectArrays.concat(abbr.split(","), abbr2.split(","), String.class);
+            filters = ObjectArrays.concat(filters, district);
             String filtersStr = TextUtils.join(",", filters);
 
             ops.add(ContentProviderOperation.newInsert(WeatherContract.City.CONTENT_URI)
                     .withValue(WeatherContract.City._ID, id)
                     .withValue(WeatherContract.City.FILTERS, filtersStr)
-                    .withValue(WeatherContract.City.COUNTY, ccounty)
+                    .withValue(WeatherContract.City.DISTRICT, district)
                     .withValue(WeatherContract.City.CITY, city)
                     .withValue(WeatherContract.City.PROVINCE, province)
                     .build());

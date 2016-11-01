@@ -25,7 +25,7 @@ public class WeatherDatabase extends SQLiteOpenHelper {
         db.execSQL("CREATE TABLE " + Tables.CITY + " ("
                 + WeatherContract.City._ID + " TEXT PRIMARY KEY,"
                 + WeatherContract.City.FILTERS + " TEXT NOT NULL,"
-                + WeatherContract.City.COUNTY + " TEXT NOT NULL,"
+                + WeatherContract.City.DISTRICT + " TEXT NOT NULL,"
                 + WeatherContract.City.CITY + " TEXT NOT NULL,"
                 + WeatherContract.City.PROVINCE + " TEXT NOT NULL,"
                 + "UNIQUE (" + WeatherContract.City._ID + ") ON CONFLICT REPLACE)");

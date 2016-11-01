@@ -3,6 +3,7 @@ package com.zhangyangjing.weather;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.content.Context;
 import android.database.Cursor;
 import android.graphics.drawable.AnimatedVectorDrawable;
 import android.net.Uri;
@@ -11,10 +12,9 @@ import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.support.v4.widget.CursorAdapter;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
-import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.TypedValue;
@@ -49,9 +49,6 @@ public class ActivityMain extends AppCompatActivity {
     private int mBtnSearchBackOffsetLeft;
     private int mBtnSearchBackOffsetRight;
 
-    @BindView(R.id.recycler_list)
-    RecyclerView mRecyclerView;
-
     @BindView(R.id.btnSearchback)
     ImageButton mBtnSearchback;
 
@@ -62,7 +59,6 @@ public class ActivityMain extends AppCompatActivity {
     View mScrim;
 
     private SearchStatus mSearchStatus;
-    private CursorRecyclerAdapter mAdapter;
     private MyLoaderManagerCallback mLoaderManagerCallback;
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
@@ -72,16 +68,20 @@ public class ActivityMain extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
-        mAdapter = new CursorRecyclerAdapter(null);
-        mRecyclerView.setAdapter(mAdapter);
-        mRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(2,
-                StaggeredGridLayoutManager.VERTICAL));
-
         mLoaderManagerCallback = new MyLoaderManagerCallback();
         getSupportLoaderManager().initLoader(0, null, mLoaderManagerCallback);
 
         mAnimateAddToBack = (AnimatedVectorDrawable) getDrawable(R.drawable.animate_add_to_back);
         mAnimateBackToAdd = (AnimatedVectorDrawable) getDrawable(R.drawable.animate_back_to_add);
+
+        int autoCompleteTextViewID = getResources()
+                .getIdentifier("search_src_text", "id", getPackageName());
+        SearchView.SearchAutoComplete searchAutoComplete = (SearchView.SearchAutoComplete)
+                mSearchView.findViewById(autoCompleteTextViewID);
+        searchAutoComplete.setThreshold(1);
+
+        mSearchView.setSuggestionsAdapter(new MyAdapter(this));
+        mSearchView.setOnQueryTextListener(new MyQueryTextListener());
 
         caculateSearchbackCoord();
         mSearchStatus = SearchStatus.NORMAL;
@@ -213,12 +213,12 @@ public class ActivityMain extends AppCompatActivity {
     class MyQueryTextListener implements SearchView.OnQueryTextListener {
         @Override
         public boolean onQueryTextSubmit(String query) {
-//            searchView.clearFocus();
             return true;
         }
 
         @Override
         public boolean onQueryTextChange(String newText) {
+            if (DEBUG) Log.d(TAG, "onQueryTextChange() called with: newText = [" + newText + "]");
             Bundle data = new Bundle();
             data.putString(KEY_FILTER, newText);
             getSupportLoaderManager().restartLoader(0, data, mLoaderManagerCallback);
@@ -239,67 +239,47 @@ public class ActivityMain extends AppCompatActivity {
         public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
             if (DEBUG) Log.d(TAG, "onLoadFinished() called with: loader = ["
                     + loader + "], cursor = [" + cursor + "]");
-            mAdapter.swapCursor(cursor);
+            mSearchView.getSuggestionsAdapter().swapCursor(cursor);
         }
 
         @Override
         public void onLoaderReset(Loader loader) {
             if (DEBUG) Log.d(TAG, "onLoaderReset() called with: loader = [" + loader + "]");
-            mAdapter.swapCursor(null);
+            mSearchView.getSuggestionsAdapter().swapCursor(null);
         }
-
     }
 
-    class CursorRecyclerAdapter extends
-            RecyclerView.Adapter<CursorRecyclerAdapter.CursorViewHolder> {
-        private Cursor mCursor;
-
-        public CursorRecyclerAdapter(Cursor cursor) {
-            mCursor = cursor;
-        }
-
-        public void swapCursor(Cursor cursor) {
-            mCursor = cursor;
-            notifyItemInserted(2);
-            notifyDataSetChanged();
+    class MyAdapter extends CursorAdapter {
+        public MyAdapter(Context context) {
+            super(context, null, false);
         }
 
         @Override
-        public int getItemCount() {
-            if (mCursor != null) {
-                return mCursor.getCount();
-            } else {
-                return 0;
-            }
+        public View newView(Context context, Cursor cursor, ViewGroup parent) {
+            View view = View.inflate(context, android.R.layout.simple_list_item_2, null);
+            view.setTag(new ViewHolder(view));
+            return view;
         }
 
         @Override
-        public CursorViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            return new CursorViewHolder(View.inflate(parent.getContext(),
-                    R.layout.item_city, null));
+        public void bindView(View view, Context context, Cursor cursor) {
+            String district = cursor.getString(cursor.getColumnIndex(WeatherContract.City.DISTRICT));
+            String city = cursor.getString(cursor.getColumnIndex(WeatherContract.City.CITY));
+            String province = cursor.getString(cursor.getColumnIndex(WeatherContract.City.PROVINCE));
+
+            ViewHolder vh = (ViewHolder) view.getTag();
+            vh.tvDistrict.setText(district);
+            vh.tvCity.setText(String.format("%s %s", province, city));
         }
 
-        @Override
-        public void onBindViewHolder(CursorViewHolder holder, int i) {
-            if (!mCursor.moveToPosition(i)) {
-                throw new IllegalStateException("couldn't move cursor to position " + i);
-            }
+        class ViewHolder {
+            @BindView(android.R.id.text1)
+            TextView tvDistrict;
+            @BindView(android.R.id.text2)
+            TextView tvCity;
 
-            mCursor.moveToPosition(i);
-            String county = mCursor.getString(mCursor.getColumnIndex(WeatherContract.City.COUNTY));
-            String city = mCursor.getString(mCursor.getColumnIndex(WeatherContract.City.CITY));
-            String province = mCursor.getString(mCursor.getColumnIndex(
-                    WeatherContract.City.PROVINCE));
-            holder.textView.setText(String.format("%s %s %s", province, city, county));
-        }
-
-        public class CursorViewHolder extends RecyclerView.ViewHolder {
-            @BindView(R.id.info_text)
-            TextView textView;
-
-            public CursorViewHolder(View itemView) {
-                super(itemView);
-                ButterKnife.bind(this, itemView);
+            ViewHolder(View v) {
+                ButterKnife.bind(this, v);
             }
         }
     }

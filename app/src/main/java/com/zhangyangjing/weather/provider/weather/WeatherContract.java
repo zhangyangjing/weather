@@ -51,7 +51,7 @@ public class WeatherContract {
         private static final String SEARCH_FILTER = "filter";
 
         public static final String FILTERS = "filters";
-        public static final String COUNTY = "county";
+        public static final String DISTRICT = "district";
         public static final String CITY = "city";
         public static final String PROVINCE = "province";
 

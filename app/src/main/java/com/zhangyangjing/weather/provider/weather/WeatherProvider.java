@@ -104,11 +104,11 @@ public class WeatherProvider extends ContentProvider {
             throws OperationApplicationException {
         SQLiteDatabase db = mOpenHelper.getWritableDatabase();
         db.beginTransaction();
-        try{
-            ContentProviderResult[]results = super.applyBatch(operations);
+        try {
+            ContentProviderResult[] results = super.applyBatch(operations);
             db.setTransactionSuccessful();
             return results;
-        }finally {
+        } finally {
             db.endTransaction();
         }
     }
@@ -133,7 +133,7 @@ public class WeatherProvider extends ContentProvider {
         if (DEBUG) Log.v(TAG, "doQueryCityWithFilter result:" + result);
 
         if (0 == result.size())
-            return new MatrixCursor(null == projection ? new String[]{} : projection);
+            return new MatrixCursor(null == projection ? new String[]{"_id"} : projection);
 
         String queryStr = String.format("SELECT * FROM %s WHERE %S IN ('%S')",
                 WeatherUriEnum.CITY.table, WeatherContract.City._ID, TextUtils.join("','", result));
