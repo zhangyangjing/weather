@@ -17,7 +17,6 @@ import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -55,15 +54,6 @@ public class ActivityMain extends AppCompatActivity {
 
         mLoaderManagerCallback = new MyLoaderManagerCallback();
         getSupportLoaderManager().initLoader(0, null, mLoaderManagerCallback);
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        SearchView searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
-        searchView.setIconifiedByDefault(false);
-        searchView.setOnQueryTextListener(new MyQueryTextListener());
-        return true;
     }
 
     @TargetApi(Build.VERSION_CODES.M)

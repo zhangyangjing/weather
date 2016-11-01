@@ -7,6 +7,6 @@
     <path
         android:name="add_to_back"
         android:fillColor="@color/colorPrimary"
-        android:pathData="M334.39,112.76v149.4h149.4V313H333.24V463.16H283.37v-150H134V262.93H282.79V112.76Z"/>
+        android:pathData="M302,34 L302,239 L501,239 L501,301 L302,301 L302,507 L233,507 L233,301 L34,301 L34,239 L233,239 L233,34 Z"/>
 </vector>
 
