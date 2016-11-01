@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -7,45 +8,61 @@
     android:fitsSystemWindows="true"
     tools:context=".ActivityMain">
 
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recycler_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+
+    <View
+        android:id="@+id/scrim"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        android:alpha="0.7"
+        android:background="@color/colorPrimaryDark"/>
+
     <android.support.design.widget.AppBarLayout
         android:id="@+id/app_bar"
         android:layout_width="match_parent"
         android:layout_height="@dimen/app_bar_height"
-        android:fitsSystemWindows="true"
-        android:theme="@style/AppTheme.AppBarOverlay">
+        android:fitsSystemWindows="true">
 
         <android.support.design.widget.CollapsingToolbarLayout
             android:id="@+id/toolbar_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:fitsSystemWindows="true"
-            app:contentScrim="?attr/colorPrimary"
+            android:minHeight="?attr/actionBarSize"
             app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
-            <android.support.v7.widget.Toolbar
-                android:id="@+id/toolbar"
+            <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
-                app:layout_collapseMode="pin"
-                app:popupTheme="@style/AppTheme.PopupOverlay" />
+                app:layout_collapseMode="pin">
+
+                <android.support.v7.widget.SearchView
+                    android:id="@+id/search_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="35dp"
+                    android:iconifiedByDefault="false"
+                    android:visibility="gone"
+                    app:iconifiedByDefault="false"
+                    app:searchIcon="@null"/>
+
+                <ImageButton
+                    android:id="@+id/btnSearchback"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:background="@android:color/transparent"
+                    android:gravity="center"
+                    android:src="@drawable/animate_add_to_back"/>
+
+            </FrameLayout>
 
         </android.support.design.widget.CollapsingToolbarLayout>
     </android.support.design.widget.AppBarLayout>
-
-    <!--<include layout="@layout/activity_main_content_scrolling" />-->
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/recycler_list"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
-
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/fab_margin"
-        android:src="@drawable/animate_add_to_back"
-        app:layout_anchor="@id/app_bar"
-        app:layout_anchorGravity="bottom|end" />
 
 </android.support.design.widget.CoordinatorLayout>

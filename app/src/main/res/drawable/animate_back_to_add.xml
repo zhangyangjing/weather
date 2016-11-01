@@ -2,5 +2,5 @@
                  android:drawable="@drawable/ic_add_back_24dp" >
     <target
         android:name="add_to_back"
-        android:animation="@animator/morph_add_to_back" />
+        android:animation="@animator/morph_back_to_add" />
 </animated-vector>

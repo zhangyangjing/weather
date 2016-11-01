@@ -1,12 +1,13 @@
 package com.zhangyangjing.weather;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.database.Cursor;
 import android.graphics.drawable.AnimatedVectorDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
@@ -14,14 +15,19 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
-import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.View;
+import android.view.ViewAnimationUtils;
 import android.view.ViewGroup;
+import android.view.animation.AnimationUtils;
+import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.zhangyangjing.weather.provider.weather.WeatherContract;
+import com.zhangyangjing.weather.util.ImeUtils;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -33,9 +39,25 @@ public class ActivityMain extends AppCompatActivity {
     private static final boolean DEBUG = false;
     private static final String KEY_FILTER = "filter";
 
+    private AnimatedVectorDrawable mAnimateAddToBack;
+    private AnimatedVectorDrawable mAnimateBackToAdd;
+
+    private int mBtnSearchBackOffsetLeft;
+    private int mBtnSearchBackOffsetRight;
+
     @BindView(R.id.recycler_list)
     RecyclerView mRecyclerView;
 
+    @BindView(R.id.btnSearchback)
+    ImageButton mBtnSearchback;
+
+    @BindView(R.id.search_view)
+    SearchView mSearchView;
+
+    @BindView(R.id.scrim)
+    View mScrim;
+
+    private SearchStatus mSearchStatus;
     private CursorRecyclerAdapter mAdapter;
     private MyLoaderManagerCallback mLoaderManagerCallback;
 
@@ -44,8 +66,6 @@ public class ActivityMain extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
 
         mAdapter = new CursorRecyclerAdapter(null);
         mRecyclerView.setAdapter(mAdapter);
@@ -54,15 +74,103 @@ public class ActivityMain extends AppCompatActivity {
 
         mLoaderManagerCallback = new MyLoaderManagerCallback();
         getSupportLoaderManager().initLoader(0, null, mLoaderManagerCallback);
+
+        mAnimateAddToBack = (AnimatedVectorDrawable) getDrawable(R.drawable.animate_add_to_back);
+        mAnimateBackToAdd = (AnimatedVectorDrawable) getDrawable(R.drawable.animate_back_to_add);
+
+        caculateSearchbackCoord();
+        mSearchStatus = SearchStatus.NORMAL;
+        mBtnSearchback.setTranslationX(mBtnSearchBackOffsetRight);
     }
 
     @TargetApi(Build.VERSION_CODES.M)
-    @OnClick(R.id.fab)
+    @OnClick(R.id.btnSearchback)
     public void onClick(View v) {
-        FloatingActionButton fab = (FloatingActionButton) v;
-        AnimatedVectorDrawable d = (AnimatedVectorDrawable) fab.getDrawable();
-        d.reset();
-        d.start();
+        if (SearchStatus.NORMAL == mSearchStatus) {
+            mBtnSearchback.setImageDrawable(mAnimateAddToBack);
+            mAnimateAddToBack.reset();
+            mAnimateAddToBack.start();
+
+            mScrim.setVisibility(View.VISIBLE);
+            mScrim.setAlpha(0.7f);
+            Animator animator = ViewAnimationUtils
+                    .createCircularReveal(mScrim, mBtnSearchBackOffsetRight, (int) mSearchView.getBottom(), 0.0f, (float) Math.hypot(mBtnSearchBackOffsetRight, mScrim.getHeight() - mSearchView.getBottom()))
+                    .setDuration(getResources().getInteger(android.R.integer.config_mediumAnimTime));
+            animator.setInterpolator(AnimationUtils.loadInterpolator(this, android.R.interpolator.fast_out_slow_in));
+            animator.start();
+
+            mBtnSearchback.animate()
+                    .translationX(mBtnSearchBackOffsetLeft)
+                    .setDuration(getResources().getInteger(android.R.integer.config_mediumAnimTime))
+                    .setInterpolator(AnimationUtils.loadInterpolator(this, android.R.interpolator.fast_out_slow_in))
+                    .start();
+
+            mSearchView.setQuery("", false);
+            mSearchView.setVisibility(View.VISIBLE);
+            mSearchView.setAlpha(0.0f);
+            mSearchView.animate()
+                    .alpha(1.0f)
+                    .setListener(new AnimatorListenerAdapter() {
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+                            mSearchView.setVisibility(View.VISIBLE);
+                            mSearchView.setAlpha(1.0f);
+                            mSearchView.requestFocus();
+                            ImeUtils.showIme(mSearchView);
+                        }
+                    })
+                    .setDuration(getResources().getInteger(android.R.integer.config_mediumAnimTime))
+                    .setInterpolator(AnimationUtils.loadInterpolator(this, android.R.interpolator.fast_out_slow_in))
+                    .start();
+            mSearchStatus = SearchStatus.SEARCH;
+        } else {
+            mBtnSearchback.setImageDrawable(mAnimateBackToAdd);
+            mAnimateBackToAdd.reset();
+            mAnimateBackToAdd.start();
+
+            mBtnSearchback.animate()
+                    .translationX(mBtnSearchBackOffsetRight)
+                    .setDuration(getResources().getInteger(android.R.integer.config_mediumAnimTime))
+                    .setInterpolator(AnimationUtils.loadInterpolator(this, android.R.interpolator.fast_out_slow_in))
+                    .start();
+
+            ImeUtils.hideIme(mSearchView);
+            mSearchView.animate()
+                    .alpha(0.0f)
+                    .setListener(new AnimatorListenerAdapter() {
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+                            mSearchView.setVisibility(View.GONE);
+                            mSearchView.clearFocus();
+                        }
+                    })
+                    .setDuration(getResources().getInteger(android.R.integer.config_mediumAnimTime))
+                    .setInterpolator(AnimationUtils.loadInterpolator(this, android.R.interpolator.fast_out_slow_in))
+                    .start();
+
+            mScrim.animate()
+                    .alpha(0.0f)
+                    .setListener(new AnimatorListenerAdapter() {
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+                            mScrim.setVisibility(View.GONE);
+                        }
+                    })
+                    .setDuration(getResources().getInteger(android.R.integer.config_mediumAnimTime))
+                    .setInterpolator(AnimationUtils.loadInterpolator(this, android.R.interpolator.fast_out_slow_in))
+                    .start();
+
+            mSearchStatus = SearchStatus.NORMAL;
+        }
+    }
+
+    private void caculateSearchbackCoord() {
+        int screenWidth = getResources().getDisplayMetrics().widthPixels;
+        FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) mBtnSearchback.getLayoutParams();
+        int margin = (int) TypedValue.applyDimension(
+                TypedValue.COMPLEX_UNIT_DIP, 16, getResources().getDisplayMetrics());
+        mBtnSearchBackOffsetLeft = margin;
+        mBtnSearchBackOffsetRight = screenWidth - margin - mBtnSearchback.getDrawable().getIntrinsicWidth();
     }
 
     class MyQueryTextListener implements SearchView.OnQueryTextListener {
@@ -92,7 +200,8 @@ public class ActivityMain extends AppCompatActivity {
 
         @Override
         public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
-            if (DEBUG) Log.d(TAG, "onLoadFinished() called with: loader = [" + loader + "], cursor = [" + cursor + "]");
+            if (DEBUG)
+                Log.d(TAG, "onLoadFinished() called with: loader = [" + loader + "], cursor = [" + cursor + "]");
             mAdapter.swapCursor(cursor);
         }
 
@@ -156,5 +265,9 @@ public class ActivityMain extends AppCompatActivity {
                 ButterKnife.bind(this, itemView);
             }
         }
+    }
+
+    enum SearchStatus {
+        NORMAL, SEARCH
     }
 }
