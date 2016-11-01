@@ -83,85 +83,100 @@ public class ActivityMain extends AppCompatActivity {
         mBtnSearchback.setTranslationX(mBtnSearchBackOffsetRight);
     }
 
-    @TargetApi(Build.VERSION_CODES.M)
     @OnClick(R.id.btnSearchback)
     public void onClick(View v) {
         if (SearchStatus.NORMAL == mSearchStatus) {
-            mBtnSearchback.setImageDrawable(mAnimateAddToBack);
-            mAnimateAddToBack.reset();
-            mAnimateAddToBack.start();
-
-            mScrim.setVisibility(View.VISIBLE);
-            mScrim.setAlpha(0.7f);
-            Animator animator = ViewAnimationUtils
-                    .createCircularReveal(mScrim, mBtnSearchBackOffsetRight, (int) mSearchView.getBottom(), 0.0f, (float) Math.hypot(mBtnSearchBackOffsetRight, mScrim.getHeight() - mSearchView.getBottom()))
-                    .setDuration(getResources().getInteger(android.R.integer.config_mediumAnimTime));
-            animator.setInterpolator(AnimationUtils.loadInterpolator(this, android.R.interpolator.fast_out_slow_in));
-            animator.start();
-
-            mBtnSearchback.animate()
-                    .translationX(mBtnSearchBackOffsetLeft)
-                    .setDuration(getResources().getInteger(android.R.integer.config_mediumAnimTime))
-                    .setInterpolator(AnimationUtils.loadInterpolator(this, android.R.interpolator.fast_out_slow_in))
-                    .start();
-
-            mSearchView.setQuery("", false);
-            mSearchView.setVisibility(View.VISIBLE);
-            mSearchView.setAlpha(0.0f);
-            mSearchView.animate()
-                    .alpha(1.0f)
-                    .setListener(new AnimatorListenerAdapter() {
-                        @Override
-                        public void onAnimationEnd(Animator animation) {
-                            mSearchView.setVisibility(View.VISIBLE);
-                            mSearchView.setAlpha(1.0f);
-                            mSearchView.requestFocus();
-                            ImeUtils.showIme(mSearchView);
-                        }
-                    })
-                    .setDuration(getResources().getInteger(android.R.integer.config_mediumAnimTime))
-                    .setInterpolator(AnimationUtils.loadInterpolator(this, android.R.interpolator.fast_out_slow_in))
-                    .start();
+            enterSearchMode();
             mSearchStatus = SearchStatus.SEARCH;
         } else {
-            mBtnSearchback.setImageDrawable(mAnimateBackToAdd);
-            mAnimateBackToAdd.reset();
-            mAnimateBackToAdd.start();
-
-            mBtnSearchback.animate()
-                    .translationX(mBtnSearchBackOffsetRight)
-                    .setDuration(getResources().getInteger(android.R.integer.config_mediumAnimTime))
-                    .setInterpolator(AnimationUtils.loadInterpolator(this, android.R.interpolator.fast_out_slow_in))
-                    .start();
-
-            ImeUtils.hideIme(mSearchView);
-            mSearchView.animate()
-                    .alpha(0.0f)
-                    .setListener(new AnimatorListenerAdapter() {
-                        @Override
-                        public void onAnimationEnd(Animator animation) {
-                            mSearchView.setVisibility(View.GONE);
-                            mSearchView.clearFocus();
-                        }
-                    })
-                    .setDuration(getResources().getInteger(android.R.integer.config_mediumAnimTime))
-                    .setInterpolator(AnimationUtils.loadInterpolator(this, android.R.interpolator.fast_out_slow_in))
-                    .start();
-
-            mScrim.animate()
-                    .alpha(0.0f)
-                    .setListener(new AnimatorListenerAdapter() {
-                        @Override
-                        public void onAnimationEnd(Animator animation) {
-                            mScrim.setVisibility(View.GONE);
-                        }
-                    })
-                    .setDuration(getResources().getInteger(android.R.integer.config_mediumAnimTime))
-                    .setInterpolator(AnimationUtils.loadInterpolator(this, android.R.interpolator.fast_out_slow_in))
-                    .start();
-
+            exitSearchMode();
             mSearchStatus = SearchStatus.NORMAL;
         }
+    }
+
+    @TargetApi(Build.VERSION_CODES.M)
+    private void enterSearchMode() {
+        mBtnSearchback.setImageDrawable(mAnimateAddToBack);
+        mAnimateAddToBack.reset();
+        mAnimateAddToBack.start();
+
+        mScrim.setVisibility(View.VISIBLE);
+        mScrim.setAlpha(0.7f);
+        Animator animator = ViewAnimationUtils
+                .createCircularReveal(mScrim, mBtnSearchBackOffsetRight, (int) mSearchView.getBottom(), 0.0f, (float) Math.hypot(mBtnSearchBackOffsetRight, mScrim.getHeight() - mSearchView.getBottom()))
+                .setDuration(getResources().getInteger(android.R.integer.config_mediumAnimTime));
+        animator.setInterpolator(AnimationUtils.loadInterpolator(this, android.R.interpolator.fast_out_slow_in));
+        animator.start();
+
+        mBtnSearchback.animate()
+                .translationX(mBtnSearchBackOffsetLeft)
+                .setDuration(getResources().getInteger(android.R.integer.config_mediumAnimTime))
+                .setInterpolator(AnimationUtils.loadInterpolator(this, android.R.interpolator.fast_out_slow_in))
+                .setListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        ImeUtils.showIme(mSearchView);
+                    }
+                })
+                .start();
+
+        mSearchView.setQuery("", false);
+        mSearchView.setVisibility(View.VISIBLE);
+        mSearchView.setAlpha(0.0f);
+        mSearchView.animate()
+                .alpha(1.0f)
+                .setListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        mSearchView.setVisibility(View.VISIBLE);
+                        mSearchView.setAlpha(1.0f);
+                        mSearchView.requestFocus();
+                    }
+                })
+                .setStartDelay(100)
+                .setDuration(getResources().getInteger(android.R.integer.config_longAnimTime))
+                .setInterpolator(AnimationUtils.loadInterpolator(this, android.R.interpolator.fast_out_slow_in))
+                .start();
+    }
+
+    @TargetApi(Build.VERSION_CODES.M)
+    private void exitSearchMode() {
+        mBtnSearchback.setImageDrawable(mAnimateBackToAdd);
+        mAnimateBackToAdd.reset();
+        mAnimateBackToAdd.start();
+
+        mBtnSearchback.animate()
+                .translationX(mBtnSearchBackOffsetRight)
+                .setDuration(getResources().getInteger(android.R.integer.config_mediumAnimTime))
+                .setInterpolator(AnimationUtils.loadInterpolator(this, android.R.interpolator.fast_out_slow_in))
+                .setStartDelay(100)
+                .start();
+
+        ImeUtils.hideIme(mSearchView);
+        mSearchView.animate()
+                .alpha(0.0f)
+                .setListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        mSearchView.setVisibility(View.GONE);
+                        mSearchView.clearFocus();
+                    }
+                })
+                .setDuration(getResources().getInteger(android.R.integer.config_mediumAnimTime))
+                .setInterpolator(AnimationUtils.loadInterpolator(this, android.R.interpolator.fast_out_slow_in))
+                .start();
+
+        mScrim.animate()
+                .alpha(0.0f)
+                .setListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        mScrim.setVisibility(View.GONE);
+                    }
+                })
+                .setDuration(getResources().getInteger(android.R.integer.config_mediumAnimTime))
+                .setInterpolator(AnimationUtils.loadInterpolator(this, android.R.interpolator.fast_out_slow_in))
+                .start();
     }
 
     private void caculateSearchbackCoord() {
