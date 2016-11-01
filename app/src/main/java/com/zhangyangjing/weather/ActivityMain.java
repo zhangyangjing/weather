@@ -18,6 +18,7 @@ import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.TypedValue;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewAnimationUtils;
 import android.view.ViewGroup;
@@ -83,14 +84,22 @@ public class ActivityMain extends AppCompatActivity {
         mBtnSearchback.setTranslationX(mBtnSearchBackOffsetRight);
     }
 
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (KeyEvent.KEYCODE_BACK == keyCode && SearchStatus.SEARCH == mSearchStatus) {
+            exitSearchMode();
+            return true;
+        }
+
+        return super.onKeyDown(keyCode, event);
+    }
+
     @OnClick(R.id.btnSearchback)
     public void onClick(View v) {
         if (SearchStatus.NORMAL == mSearchStatus) {
             enterSearchMode();
-            mSearchStatus = SearchStatus.SEARCH;
         } else {
             exitSearchMode();
-            mSearchStatus = SearchStatus.NORMAL;
         }
     }
 
@@ -137,6 +146,8 @@ public class ActivityMain extends AppCompatActivity {
                 .setDuration(getResources().getInteger(android.R.integer.config_longAnimTime))
                 .setInterpolator(AnimationUtils.loadInterpolator(this, android.R.interpolator.fast_out_slow_in))
                 .start();
+
+        mSearchStatus = SearchStatus.SEARCH;
     }
 
     @TargetApi(Build.VERSION_CODES.M)
@@ -177,6 +188,8 @@ public class ActivityMain extends AppCompatActivity {
                 .setDuration(getResources().getInteger(android.R.integer.config_mediumAnimTime))
                 .setInterpolator(AnimationUtils.loadInterpolator(this, android.R.interpolator.fast_out_slow_in))
                 .start();
+
+        mSearchStatus = SearchStatus.NORMAL;
     }
 
     private void caculateSearchbackCoord() {
