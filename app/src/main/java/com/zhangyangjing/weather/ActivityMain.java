@@ -22,12 +22,11 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewAnimationUtils;
 import android.view.ViewGroup;
-import android.view.animation.AnimationUtils;
-import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.zhangyangjing.weather.provider.weather.WeatherContract;
+import com.zhangyangjing.weather.util.AnimUtils;
 import com.zhangyangjing.weather.util.ImeUtils;
 
 import butterknife.BindView;
@@ -36,6 +35,10 @@ import butterknife.OnClick;
 
 public class ActivityMain extends AppCompatActivity {
     private static final String TAG = ActivityMain.class.getSimpleName();
+
+    private static final int ANIM_DURATION_SHORT = 195;
+    private static final int ANIM_DURATION_MEDIUM = 225;
+    private static final int ANIM_DURATION_LONG = 375;
 
     private static final boolean DEBUG = false;
     private static final String KEY_FILTER = "filter";
@@ -62,6 +65,7 @@ public class ActivityMain extends AppCompatActivity {
     private CursorRecyclerAdapter mAdapter;
     private MyLoaderManagerCallback mLoaderManagerCallback;
 
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -111,16 +115,22 @@ public class ActivityMain extends AppCompatActivity {
 
         mScrim.setVisibility(View.VISIBLE);
         mScrim.setAlpha(0.7f);
-        Animator animator = ViewAnimationUtils
-                .createCircularReveal(mScrim, mBtnSearchBackOffsetRight, (int) mSearchView.getBottom(), 0.0f, (float) Math.hypot(mBtnSearchBackOffsetRight, mScrim.getHeight() - mSearchView.getBottom()))
-                .setDuration(getResources().getInteger(android.R.integer.config_mediumAnimTime));
-        animator.setInterpolator(AnimationUtils.loadInterpolator(this, android.R.interpolator.fast_out_slow_in));
+        float endRadius = (float) Math.hypot(mBtnSearchBackOffsetRight,
+                mScrim.getHeight() - mSearchView.getBottom());
+        Animator animator = ViewAnimationUtils.createCircularReveal(
+                mScrim,
+                mBtnSearchBackOffsetRight,
+                mSearchView.getBottom(),
+                0.0f,
+                endRadius)
+                .setDuration(ANIM_DURATION_LONG);
+        animator.setInterpolator(AnimUtils.getLinearOutSlowInInterpolator(this));
         animator.start();
 
         mBtnSearchback.animate()
                 .translationX(mBtnSearchBackOffsetLeft)
-                .setDuration(getResources().getInteger(android.R.integer.config_mediumAnimTime))
-                .setInterpolator(AnimationUtils.loadInterpolator(this, android.R.interpolator.fast_out_slow_in))
+                .setDuration(ANIM_DURATION_MEDIUM)
+                .setInterpolator(AnimUtils.getFastOutSlowInInterpolator(this))
                 .setListener(new AnimatorListenerAdapter() {
                     @Override
                     public void onAnimationEnd(Animator animation) {
@@ -134,6 +144,9 @@ public class ActivityMain extends AppCompatActivity {
         mSearchView.setAlpha(0.0f);
         mSearchView.animate()
                 .alpha(1.0f)
+                .setStartDelay(100)
+                .setDuration(ANIM_DURATION_MEDIUM)
+                .setInterpolator(AnimUtils.getFastOutSlowInInterpolator(this))
                 .setListener(new AnimatorListenerAdapter() {
                     @Override
                     public void onAnimationEnd(Animator animation) {
@@ -142,9 +155,6 @@ public class ActivityMain extends AppCompatActivity {
                         mSearchView.requestFocus();
                     }
                 })
-                .setStartDelay(100)
-                .setDuration(getResources().getInteger(android.R.integer.config_longAnimTime))
-                .setInterpolator(AnimationUtils.loadInterpolator(this, android.R.interpolator.fast_out_slow_in))
                 .start();
 
         mSearchStatus = SearchStatus.SEARCH;
@@ -156,27 +166,6 @@ public class ActivityMain extends AppCompatActivity {
         mAnimateBackToAdd.reset();
         mAnimateBackToAdd.start();
 
-        mBtnSearchback.animate()
-                .translationX(mBtnSearchBackOffsetRight)
-                .setDuration(getResources().getInteger(android.R.integer.config_mediumAnimTime))
-                .setInterpolator(AnimationUtils.loadInterpolator(this, android.R.interpolator.fast_out_slow_in))
-                .setStartDelay(100)
-                .start();
-
-        ImeUtils.hideIme(mSearchView);
-        mSearchView.animate()
-                .alpha(0.0f)
-                .setListener(new AnimatorListenerAdapter() {
-                    @Override
-                    public void onAnimationEnd(Animator animation) {
-                        mSearchView.setVisibility(View.GONE);
-                        mSearchView.clearFocus();
-                    }
-                })
-                .setDuration(getResources().getInteger(android.R.integer.config_mediumAnimTime))
-                .setInterpolator(AnimationUtils.loadInterpolator(this, android.R.interpolator.fast_out_slow_in))
-                .start();
-
         mScrim.animate()
                 .alpha(0.0f)
                 .setListener(new AnimatorListenerAdapter() {
@@ -185,20 +174,40 @@ public class ActivityMain extends AppCompatActivity {
                         mScrim.setVisibility(View.GONE);
                     }
                 })
-                .setDuration(getResources().getInteger(android.R.integer.config_mediumAnimTime))
-                .setInterpolator(AnimationUtils.loadInterpolator(this, android.R.interpolator.fast_out_slow_in))
+                .setDuration(ANIM_DURATION_MEDIUM)
+                .setInterpolator(AnimUtils.getFastOutLinearInInterpolator(this))
                 .start();
 
+        mBtnSearchback.animate()
+                .translationX(mBtnSearchBackOffsetRight)
+                .setDuration(ANIM_DURATION_SHORT)
+                .setInterpolator(AnimUtils.getFastOutSlowInInterpolator(this))
+                .setStartDelay(100)
+                .start();
+
+        ImeUtils.hideIme(mSearchView);
+        mSearchView.animate()
+                .alpha(0.0f)
+                .setDuration(ANIM_DURATION_SHORT)
+                .setInterpolator(AnimUtils.getFastOutSlowInInterpolator(this))
+                .setListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        mSearchView.setVisibility(View.GONE);
+                        mSearchView.clearFocus();
+                    }
+                })
+                .start();
         mSearchStatus = SearchStatus.NORMAL;
     }
 
     private void caculateSearchbackCoord() {
         int screenWidth = getResources().getDisplayMetrics().widthPixels;
-        FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) mBtnSearchback.getLayoutParams();
         int margin = (int) TypedValue.applyDimension(
                 TypedValue.COMPLEX_UNIT_DIP, 16, getResources().getDisplayMetrics());
         mBtnSearchBackOffsetLeft = margin;
-        mBtnSearchBackOffsetRight = screenWidth - margin - mBtnSearchback.getDrawable().getIntrinsicWidth();
+        mBtnSearchBackOffsetRight = screenWidth
+                - margin - mBtnSearchback.getDrawable().getIntrinsicWidth();
     }
 
     class MyQueryTextListener implements SearchView.OnQueryTextListener {
@@ -228,8 +237,8 @@ public class ActivityMain extends AppCompatActivity {
 
         @Override
         public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
-            if (DEBUG)
-                Log.d(TAG, "onLoadFinished() called with: loader = [" + loader + "], cursor = [" + cursor + "]");
+            if (DEBUG) Log.d(TAG, "onLoadFinished() called with: loader = ["
+                    + loader + "], cursor = [" + cursor + "]");
             mAdapter.swapCursor(cursor);
         }
 
