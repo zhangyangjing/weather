@@ -105,7 +105,7 @@ public class ActivityMain extends AppCompatActivity {
     @OnClick(R.id.btnSearchback)
     public void onClick(View v) {
         Heweather.getApi().getCityWeather("CN101010100")
-                .subscribeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.io())
                 .subscribe(new Observer<HeWeather>() {
                     @Override
                     public void onCompleted() {
