@@ -27,15 +27,13 @@ import android.widget.TextView;
 
 import com.zhangyangjing.weather.provider.weather.WeatherContract;
 import com.zhangyangjing.weather.sync.heweather.Heweather;
+import com.zhangyangjing.weather.sync.heweather.model.HeWeather;
 import com.zhangyangjing.weather.util.AnimUtils;
 import com.zhangyangjing.weather.util.ImeUtils;
-
-import java.io.IOException;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import okhttp3.ResponseBody;
 import rx.Observer;
 import rx.schedulers.Schedulers;
 
@@ -108,26 +106,23 @@ public class ActivityMain extends AppCompatActivity {
     public void onClick(View v) {
         Heweather.getApi().getCityWeather("CN101010100")
                 .subscribeOn(Schedulers.newThread())
-                .subscribe(new Observer<ResponseBody>() {
+                .subscribe(new Observer<HeWeather>() {
                     @Override
                     public void onCompleted() {
-                        Log.d(TAG, "onCompleted() called");
+
                     }
 
                     @Override
                     public void onError(Throwable e) {
-                        e.printStackTrace();
                         Log.d(TAG, "onError() called with: e = [" + e + "]");
                     }
 
                     @Override
-                    public void onNext(ResponseBody responseBody) {
-                        try {
-                            Log.d(TAG, "onNext() called with: responseBody = ["
-                                    + responseBody.string() + "]");
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
+                    public void onNext(HeWeather heWeather) {
+                        Log.d(TAG, "onNext() called with: heWeather = [" + heWeather + "]");
+                        Log.v(TAG, "" + heWeather.heWeatherDataService30.get(0).status);
+                        Log.v(TAG, "" + heWeather.heWeatherDataService30.get(0).aqi.city.pm25);
+                        Log.v(TAG, "" + heWeather.heWeatherDataService30.get(0).now.tmp);
                     }
                 });
 

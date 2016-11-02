@@ -1,6 +1,7 @@
 package com.zhangyangjing.weather.sync.heweather;
 
-import okhttp3.ResponseBody;
+import com.zhangyangjing.weather.sync.heweather.model.HeWeather;
+
 import retrofit2.http.GET;
 import retrofit2.http.Query;
 import rx.Observable;
@@ -13,5 +14,5 @@ public interface HeWeatherService {
     String ENDPOINT = "http://api.heweather.com/x3/";
 
     @GET("weather")
-    Observable<ResponseBody> getCityWeather(@Query("cityid") String cityid);
+    Observable<HeWeather> getCityWeather(@Query("cityid") String cityid);
 }
