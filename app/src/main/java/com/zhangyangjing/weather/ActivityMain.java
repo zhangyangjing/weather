@@ -26,12 +26,18 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.zhangyangjing.weather.provider.weather.WeatherContract;
+import com.zhangyangjing.weather.sync.heweather.Heweather;
 import com.zhangyangjing.weather.util.AnimUtils;
 import com.zhangyangjing.weather.util.ImeUtils;
+
+import java.io.IOException;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import okhttp3.ResponseBody;
+import rx.Observer;
+import rx.schedulers.Schedulers;
 
 public class ActivityMain extends AppCompatActivity {
     private static final String TAG = ActivityMain.class.getSimpleName();
@@ -100,6 +106,31 @@ public class ActivityMain extends AppCompatActivity {
 
     @OnClick(R.id.btnSearchback)
     public void onClick(View v) {
+        Heweather.getApi().getCityWeather("CN101010100")
+                .subscribeOn(Schedulers.newThread())
+                .subscribe(new Observer<ResponseBody>() {
+                    @Override
+                    public void onCompleted() {
+                        Log.d(TAG, "onCompleted() called");
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                        Log.d(TAG, "onError() called with: e = [" + e + "]");
+                    }
+
+                    @Override
+                    public void onNext(ResponseBody responseBody) {
+                        try {
+                            Log.d(TAG, "onNext() called with: responseBody = ["
+                                    + responseBody.string() + "]");
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+
         if (SearchStatus.NORMAL == mSearchStatus) {
             enterSearchMode();
         } else {
@@ -123,13 +154,13 @@ public class ActivityMain extends AppCompatActivity {
                 mSearchView.getBottom(),
                 0.0f,
                 endRadius)
-                .setDuration(ANIM_DURATION_LONG);
-        animator.setInterpolator(AnimUtils.getLinearOutSlowInInterpolator(this));
+                .setDuration(ANIM_DURATION_MEDIUM);
+        animator.setInterpolator(AnimUtils.getFastOutSlowInInterpolator(this));
         animator.start();
 
         mBtnSearchback.animate()
                 .translationX(mBtnSearchBackOffsetLeft)
-                .setDuration(ANIM_DURATION_MEDIUM)
+                .setDuration(ANIM_DURATION_LONG)
                 .setInterpolator(AnimUtils.getFastOutSlowInInterpolator(this))
                 .setListener(new AnimatorListenerAdapter() {
                     @Override
@@ -175,7 +206,7 @@ public class ActivityMain extends AppCompatActivity {
                     }
                 })
                 .setDuration(ANIM_DURATION_MEDIUM)
-                .setInterpolator(AnimUtils.getFastOutLinearInInterpolator(this))
+                .setInterpolator(AnimUtils.getFastOutSlowInInterpolator(this))
                 .start();
 
         mBtnSearchback.animate()
