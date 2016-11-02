@@ -27,7 +27,7 @@ import android.widget.TextView;
 
 import com.zhangyangjing.weather.provider.weather.WeatherContract;
 import com.zhangyangjing.weather.sync.heweather.Heweather;
-import com.zhangyangjing.weather.sync.heweather.model.HeWeather;
+import com.zhangyangjing.weather.sync.heweather.model.HeWeatherData;
 import com.zhangyangjing.weather.util.AnimUtils;
 import com.zhangyangjing.weather.util.ImeUtils;
 
@@ -106,7 +106,7 @@ public class ActivityMain extends AppCompatActivity {
     public void onClick(View v) {
         Heweather.getApi().getCityWeather("CN101010100")
                 .subscribeOn(Schedulers.io())
-                .subscribe(new Observer<HeWeather>() {
+                .subscribe(new Observer<HeWeatherData>() {
                     @Override
                     public void onCompleted() {
 
@@ -114,15 +114,16 @@ public class ActivityMain extends AppCompatActivity {
 
                     @Override
                     public void onError(Throwable e) {
+                        e.printStackTrace();
                         Log.d(TAG, "onError() called with: e = [" + e + "]");
                     }
 
                     @Override
-                    public void onNext(HeWeather heWeather) {
+                    public void onNext(HeWeatherData heWeather) {
                         Log.d(TAG, "onNext() called with: heWeather = [" + heWeather + "]");
-                        Log.v(TAG, "" + heWeather.heWeatherDataService30.get(0).status);
-                        Log.v(TAG, "" + heWeather.heWeatherDataService30.get(0).aqi.city.pm25);
-                        Log.v(TAG, "" + heWeather.heWeatherDataService30.get(0).now.tmp);
+                        Log.v(TAG, "" + heWeather.status);
+                        Log.v(TAG, "" + heWeather.aqi.city.pm25);
+                        Log.v(TAG, "" + heWeather.now.tmp);
                     }
                 });
 

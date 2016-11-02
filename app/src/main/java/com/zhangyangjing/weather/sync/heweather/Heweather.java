@@ -3,7 +3,6 @@ package com.zhangyangjing.weather.sync.heweather;
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * Created by zhangyangjing on 02/11/2016.
@@ -18,7 +17,7 @@ public class Heweather {
 
         Retrofit retrofit = new Retrofit.Builder()
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
-                .addConverterFactory(GsonConverterFactory.create())
+                .addConverterFactory(new WeatherDataConverterFactory())
                 .client(okHttpClient)
                 .baseUrl(HeWeatherService.ENDPOINT)
                 .build();

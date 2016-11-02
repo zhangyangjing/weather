@@ -10,8 +10,8 @@ import java.util.List;
 /**
  * Generate from http://www.jsonschema2pojo.org/
  */
-public class HeWeather {
+public class HeWeatherDataWrapper {
     @SerializedName("HeWeather data service 3.0")
     @Expose
-    public List<HeWeatherDataService30> heWeatherDataService30 = new ArrayList<HeWeatherDataService30>();
+    public List<HeWeatherData> heWeatherDataService30 = new ArrayList<HeWeatherData>();
 }
