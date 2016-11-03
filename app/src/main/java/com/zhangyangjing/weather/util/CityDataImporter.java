@@ -62,7 +62,6 @@ public class CityDataImporter {
         if (DEBUG) timings.addSplit("build ops");
 
         context.getContentResolver().applyBatch(WeatherContract.CONTENT_AUTHORITY, ops);
-        context.getContentResolver().notifyChange(WeatherContract.City.CONTENT_URI, null);
 
         if (DEBUG) timings.addSplit("apply ops");
         if (DEBUG) timings.dumpToLog();

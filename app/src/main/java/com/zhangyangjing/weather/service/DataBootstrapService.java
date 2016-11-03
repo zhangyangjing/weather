@@ -5,12 +5,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
-import android.preference.PreferenceManager;
 import android.util.Log;
 
 import com.zhangyangjing.weather.util.CityDataImporter;
 
 import static android.preference.PreferenceManager.getDefaultSharedPreferences;
+
 
 public class DataBootstrapService extends IntentService {
     private static final String TAG = DataBootstrapService.class.getSimpleName();
@@ -58,7 +58,7 @@ public class DataBootstrapService extends IntentService {
             CityDataImporter.importData(this, "city.data");
 
             int newVersion = getNewVersion(this);
-            PreferenceManager.getDefaultSharedPreferences(this).edit()
+            getDefaultSharedPreferences(this).edit()
                     .putInt(KEY_CITY_DATA_VERSION, newVersion).apply();
 
             Intent broadcastIntent = new Intent(ACTION_IMPORT_FINISH);

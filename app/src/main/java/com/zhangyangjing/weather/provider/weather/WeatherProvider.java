@@ -1,28 +1,26 @@
 package com.zhangyangjing.weather.provider.weather;
 
 import android.content.ContentProvider;
-import android.content.ContentProviderOperation;
-import android.content.ContentProviderResult;
 import android.content.ContentValues;
-import android.content.OperationApplicationException;
 import android.database.Cursor;
 import android.database.MatrixCursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.net.Uri;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.Log;
 
-import java.util.ArrayList;
+import com.google.gson.Gson;
+import com.zhangyangjing.weather.sync.heweather.model.HeWeatherData;
+
 import java.util.Set;
 
 /**
  * Created by zhangyangjing on 5/13/16.
  */
 public class WeatherProvider extends ContentProvider {
-    private static final String TAG = WeatherContract.class.getSimpleName();
-    private static final boolean DEBUG = false;
+    private static final String TAG = WeatherProvider.class.getSimpleName();
+    private static final boolean DEBUG = true;
 
     private WeatherProviderUriMatcher mWeatherProviderUriMatcher;
     private SQLiteOpenHelper mOpenHelper;
@@ -44,19 +42,32 @@ public class WeatherProvider extends ContentProvider {
                 + selectionArgs + "], sortOrder = [" + sortOrder + "]");
 
         WeatherUriEnum weatherUriEnum = mWeatherProviderUriMatcher.matchUri(uri);
+        if (false == weatherUriEnum.canRead)
+            return null;
+
         switch (weatherUriEnum) {
-            case WEATHER:
-                String cityId = WeatherContract.Weather.getCityId(uri);
-                break;
-            case CITY:
+            case CITY: {
                 String filter = WeatherContract.City.getSearchFilter(uri);
                 Cursor cursor = doQueryCityWithFilter(projection,
                         selection, selectionArgs, sortOrder, filter);
                 cursor.setNotificationUri(getContext().getContentResolver(),
                         WeatherContract.City.CONTENT_URI);
                 return cursor;
+            }
+            case WEATHER_NOW: {
+                String city = WeatherContract.WeatherNow.getCityId(uri);
+                Cursor cursor = doQueryWeatherNow(city);
+                cursor.setNotificationUri(getContext().getContentResolver(),
+                        WeatherContract.WeatherNow.buildObserveUri(city));
+                return cursor;
+            }
+            case WEATHER_HOURLY:
+                return null;
+            case WEATHER_DAILY:
+                return null;
+            default:
+                return null;
         }
-        return null;
     }
 
     @Nullable
@@ -71,18 +82,26 @@ public class WeatherProvider extends ContentProvider {
         if (DEBUG) Log.v(TAG, "insert " + uri + " " + values);
 
         WeatherUriEnum weatherUriEnum = mWeatherProviderUriMatcher.matchUri(uri);
+        if (false == weatherUriEnum.canWrite)
+            return null;
+
         if (weatherUriEnum.table != null) {
             mOpenHelper.getWritableDatabase().insertOrThrow(weatherUriEnum.table, null, values);
         }
 
         switch (weatherUriEnum) {
             case WEATHER:
-                return null;
+                Log.v(TAG, "notifychange on:" +WeatherContract.Weather.buildObserveUri(
+                                values.getAsString(WeatherContract.Weather._ID)));
+                getContext().getContentResolver().notifyChange(
+                        WeatherContract.Weather.buildObserveUri(
+                                values.getAsString(WeatherContract.Weather._ID)),
+                        null);
+                break;
             case CITY:
                 return WeatherContract.City.buildCityUri(values.getAsString(WeatherContract.City._ID));
-            default:
-                return null;
         }
+        return null;
     }
 
     @Override
@@ -98,20 +117,21 @@ public class WeatherProvider extends ContentProvider {
                 + "], selection = [" + selection + "], selectionArgs = [" + selectionArgs + "]");
         return 0;
     }
-
-    @Override
-    public ContentProviderResult[] applyBatch(ArrayList<ContentProviderOperation> operations)
-            throws OperationApplicationException {
-        SQLiteDatabase db = mOpenHelper.getWritableDatabase();
-        db.beginTransaction();
-        try {
-            ContentProviderResult[] results = super.applyBatch(operations);
-            db.setTransactionSuccessful();
-            return results;
-        } finally {
-            db.endTransaction();
-        }
-    }
+//
+//    @Override
+//    public ContentProviderResult[] applyBatch(ArrayList<ContentProviderOperation> operations)
+//            throws OperationApplicationException {
+//        SQLiteDatabase db = mOpenHelper.getWritableDatabase();
+//        db.beginTransaction();
+//        try {
+//            ContentProviderResult[] results = super.applyBatch(operations);
+//            db.setTransactionSuccessful();
+//            getContext().getContentResolver().notifyChange(WeatherContract.City.CONTENT_URI, null);
+//            return results;
+//        } finally {
+//            db.endTransaction();
+//        }
+//    }
 
     private Cursor doQueryCityWithFilter(String[] projection, String selection,
                                          String[] selectionArgs, String sortOrder, String filter) {
@@ -138,5 +158,65 @@ public class WeatherProvider extends ContentProvider {
         String queryStr = String.format("SELECT * FROM %s WHERE %S IN ('%S')",
                 WeatherUriEnum.CITY.table, WeatherContract.City._ID, TextUtils.join("','", result));
         return mOpenHelper.getReadableDatabase().rawQuery(queryStr, null);
+    }
+
+    private Cursor doQueryWeatherNow(String city) {
+        MatrixCursor cursor = new MatrixCursor(WeatherContract.WeatherNow.getColumns());
+        HeWeatherData data = getWeatherData(city);
+        if (null == data)
+            return cursor;
+
+        cursor.addRow(new String[]{
+                city,
+                data.aqi.city.aqi,
+                data.aqi.city.co,
+                data.aqi.city.no2,
+                data.aqi.city.o3,
+                data.aqi.city.pm10,
+                data.aqi.city.pm25,
+                data.aqi.city.so2,
+                data.now.tmp,
+                data.now.fl,
+                data.now.hum,
+                data.now.pres,
+                data.now.vis,
+                data.now.wind.spd,
+                data.now.wind.sc,
+                data.now.wind.dir,
+                data.now.wind.deg});
+
+        return cursor;
+    }
+
+    private Cursor doQueryWeatherHourly(String city) {
+        HeWeatherData data = getWeatherData(city);
+        if (null == data)
+            return new MatrixCursor(new String[]{WeatherContract.WeatherHourly._ID});
+        return null;
+    }
+
+    private Cursor doQueryWeatherDaily(String city) {
+        HeWeatherData data = getWeatherData(city);
+        if (null == data)
+            return new MatrixCursor(new String[]{WeatherContract.WeatherDaily._ID});
+        return null;
+    }
+
+    private HeWeatherData getWeatherData(String city) {
+        Cursor cursor = mOpenHelper.getReadableDatabase().query(
+                WeatherUriEnum.WEATHER.table,
+                new String[]{WeatherContract.Weather.DATA},
+                WeatherContract.Weather._ID + "=?",
+                new String[]{city},
+                null,
+                null,
+                null);
+
+        if (0 == cursor.getCount())
+            return null;
+
+        cursor.moveToFirst();
+        String dataStr = cursor.getString(cursor.getColumnIndex(WeatherContract.Weather.DATA));
+        return new Gson().fromJson(dataStr, HeWeatherData.class);
     }
 }

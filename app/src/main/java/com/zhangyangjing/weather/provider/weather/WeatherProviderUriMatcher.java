@@ -28,7 +28,7 @@ public class WeatherProviderUriMatcher {
     private void buildUriMatcher() {
         WeatherUriEnum[] uris = WeatherUriEnum.values();
         for (int i = 0; i < uris.length; i++) {
-            mUriMatcher.addURI(WeatherContract.CONTENT_AUTHORITY, uris[i].path, uris[i].code);
+            mUriMatcher.addURI(WeatherContract.CONTENT_AUTHORITY, uris[i].matchPath, uris[i].code);
             mEnumsMap.put(uris[i].code, uris[i]);
         }
     }

@@ -17,7 +17,6 @@ import android.support.v4.content.Loader;
 import android.support.v4.widget.CursorAdapter;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
-import android.text.TextUtils;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.KeyEvent;
@@ -43,7 +42,7 @@ public class ActivityMain extends AppCompatActivity {
     private static final int ANIM_DURATION_MEDIUM = 225;
     private static final int ANIM_DURATION_LONG = 375;
 
-    private static final boolean DEBUG = false;
+    private static final boolean DEBUG = true;
     private static final String KEY_FILTER = "filter";
 
     private AnimatedVectorDrawable mAnimateAddToBack;
@@ -89,6 +88,8 @@ public class ActivityMain extends AppCompatActivity {
         caculateSearchbackCoord();
         mSearchStatus = SearchStatus.NORMAL;
         mBtnSearchback.setTranslationX(mBtnSearchBackOffsetRight);
+
+        getSupportLoaderManager().restartLoader(0 ,null, mLoaderManagerCallback);
     }
 
     @Override
@@ -104,12 +105,12 @@ public class ActivityMain extends AppCompatActivity {
     @OnClick(R.id.btnSearchback)
     public void onClick(View v) {
         Account account = AccountUtil.getSyncAccount(this);
-        getContentResolver().setSyncAutomatically(account, WeatherContract.CONTENT_AUTHORITY, true);
-        getContentResolver().setIsSyncable(account, WeatherContract.CONTENT_AUTHORITY, 1);
-        getContentResolver().setMasterSyncAutomatically(true);
-
-        Bundle ex = new Bundle();
-        getContentResolver().addPeriodicSync(account, WeatherContract.CONTENT_AUTHORITY, ex, 1);
+//        getContentResolver().setSyncAutomatically(account, WeatherContract.CONTENT_AUTHORITY, true);
+//        getContentResolver().setIsSyncable(account, WeatherContract.CONTENT_AUTHORITY, 1);
+//        getContentResolver().setMasterSyncAutomatically(true);
+//
+//        Bundle ex = new Bundle();
+//        getContentResolver().addPeriodicSync(account, WeatherContract.CONTENT_AUTHORITY, ex, 1);
 
         Bundle extras = new Bundle();
         extras.putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true);
@@ -245,9 +246,10 @@ public class ActivityMain extends AppCompatActivity {
     class MyLoaderManagerCallback implements LoaderManager.LoaderCallbacks<Cursor> {
         @Override
         public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-            String filter = null == args ? "" : args.getString(KEY_FILTER, "");
-            Uri uri = TextUtils.isEmpty(filter) ?
-                    WeatherContract.City.CONTENT_URI : WeatherContract.City.buildSearchUri(filter);
+//            String filter = null == args ? "" : args.getString(KEY_FILTER, "");
+//            Uri uri = TextUtils.isEmpty(filter) ?
+//                    WeatherContract.City.CONTENT_URI : WeatherContract.City.buildSearchUri(filter);
+            Uri uri = WeatherContract.WeatherNow.buildQueryUri("CN101010100");
             return new CursorLoader(getBaseContext(), uri, null, null, null, null);
         }
 
@@ -255,13 +257,19 @@ public class ActivityMain extends AppCompatActivity {
         public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
             if (DEBUG) Log.d(TAG, "onLoadFinished() called with: loader = ["
                     + loader + "], cursor = [" + cursor + "]");
-            mSearchView.getSuggestionsAdapter().swapCursor(cursor);
+
+            cursor.moveToFirst();
+            Log.v(TAG, "cursor count:" + cursor.getCount());
+            int tmp = cursor.getInt(cursor.getColumnIndex(WeatherContract.WeatherNow.TMP));
+            int pm25 = cursor.getInt(cursor.getColumnIndex(WeatherContract.WeatherNow.PM25));
+            Log.v(TAG, String.format("tmp:%d pm2.5:%d", tmp, pm25));
+//            mSearchView.getSuggestionsAdapter().swapCursor(cursor);
         }
 
         @Override
         public void onLoaderReset(Loader loader) {
             if (DEBUG) Log.d(TAG, "onLoaderReset() called with: loader = [" + loader + "]");
-            mSearchView.getSuggestionsAdapter().swapCursor(null);
+//            mSearchView.getSuggestionsAdapter().swapCursor(null);
         }
     }
 
