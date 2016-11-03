@@ -1,12 +1,10 @@
 package com.zhangyangjing.weather;
 
-import android.accounts.AccountManager;
-import android.accounts.AccountManagerCallback;
-import android.accounts.AccountManagerFuture;
+import android.accounts.Account;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
-import android.app.Service;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
 import android.graphics.drawable.AnimatedVectorDrawable;
@@ -30,6 +28,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.zhangyangjing.weather.provider.weather.WeatherContract;
+import com.zhangyangjing.weather.util.AccountUtil;
 import com.zhangyangjing.weather.util.AnimUtils;
 import com.zhangyangjing.weather.util.ImeUtils;
 
@@ -104,46 +103,18 @@ public class ActivityMain extends AppCompatActivity {
 
     @OnClick(R.id.btnSearchback)
     public void onClick(View v) {
-//        Heweather.getApi().getCityWeather("CN101010100")
-//                .subscribeOn(Schedulers.io())
-//                .subscribe(new Observer<HeWeatherData>() {
-//                    @Override
-//                    public void onCompleted() {
-//
-//                    }
-//
-//                    @Override
-//                    public void onError(Throwable e) {
-//                        e.printStackTrace();
-//                        Log.d(TAG, "onError() called with: e = [" + e + "]");
-//                    }
-//
-//                    @Override
-//                    public void onNext(HeWeatherData heWeather) {
-//                        Log.d(TAG, "onNext() called with: heWeather = [" + heWeather + "]");
-//                        Log.v(TAG, "" + heWeather.status);
-//                        Log.v(TAG, "" + heWeather.aqi.city.pm25);
-//                        Log.v(TAG, "" + heWeather.now.tmp);
-//                    }
-//                });
+        Account account = AccountUtil.getSyncAccount(this);
+        getContentResolver().setSyncAutomatically(account, WeatherContract.CONTENT_AUTHORITY, true);
+        getContentResolver().setIsSyncable(account, WeatherContract.CONTENT_AUTHORITY, 1);
+        getContentResolver().setMasterSyncAutomatically(true);
 
-        AccountManager accountManager = (AccountManager) getSystemService(Service.ACCOUNT_SERVICE);
+        Bundle ex = new Bundle();
+        getContentResolver().addPeriodicSync(account, WeatherContract.CONTENT_AUTHORITY, ex, 1);
 
-//        Account account = new Account("zyj", "com.zhangyangjing.weather");
-//        accountManager.getAuthToken(account, "authtype", null, this, new AccountManagerCallback<Bundle>() {
-//            @Override
-//            public void run(AccountManagerFuture<Bundle> accountManagerFuture) {
-//                Log.d(TAG, "run() called with: accountManagerFuture = [" + accountManagerFuture + "]");
-//            }
-//        }, null);
-
-
-        AccountManagerFuture future = accountManager.getAuthTokenByFeatures("com.zhangyangjing.weather", "kkkauthtype", null, this, null, null, new AccountManagerCallback<Bundle>() {
-            @Override
-            public void run(AccountManagerFuture<Bundle> accountManagerFuture) {
-                Log.d(TAG, "run() called with: accountManagerFuture = [" + accountManagerFuture + "]");
-            }
-        }, null);
+        Bundle extras = new Bundle();
+        extras.putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true);
+        extras.putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
+        getContentResolver().requestSync(account, WeatherContract.CONTENT_AUTHORITY, extras);
 
         if (SearchStatus.NORMAL == mSearchStatus) {
             enterSearchMode();
