@@ -1,8 +1,12 @@
 package com.zhangyangjing.weather;
 
+import android.accounts.AccountManager;
+import android.accounts.AccountManagerCallback;
+import android.accounts.AccountManagerFuture;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.app.Service;
 import android.content.Context;
 import android.database.Cursor;
 import android.graphics.drawable.AnimatedVectorDrawable;
@@ -26,16 +30,12 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.zhangyangjing.weather.provider.weather.WeatherContract;
-import com.zhangyangjing.weather.sync.heweather.Heweather;
-import com.zhangyangjing.weather.sync.heweather.model.HeWeatherData;
 import com.zhangyangjing.weather.util.AnimUtils;
 import com.zhangyangjing.weather.util.ImeUtils;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import rx.Observer;
-import rx.schedulers.Schedulers;
 
 public class ActivityMain extends AppCompatActivity {
     private static final String TAG = ActivityMain.class.getSimpleName();
@@ -104,28 +104,46 @@ public class ActivityMain extends AppCompatActivity {
 
     @OnClick(R.id.btnSearchback)
     public void onClick(View v) {
-        Heweather.getApi().getCityWeather("CN101010100")
-                .subscribeOn(Schedulers.io())
-                .subscribe(new Observer<HeWeatherData>() {
-                    @Override
-                    public void onCompleted() {
+//        Heweather.getApi().getCityWeather("CN101010100")
+//                .subscribeOn(Schedulers.io())
+//                .subscribe(new Observer<HeWeatherData>() {
+//                    @Override
+//                    public void onCompleted() {
+//
+//                    }
+//
+//                    @Override
+//                    public void onError(Throwable e) {
+//                        e.printStackTrace();
+//                        Log.d(TAG, "onError() called with: e = [" + e + "]");
+//                    }
+//
+//                    @Override
+//                    public void onNext(HeWeatherData heWeather) {
+//                        Log.d(TAG, "onNext() called with: heWeather = [" + heWeather + "]");
+//                        Log.v(TAG, "" + heWeather.status);
+//                        Log.v(TAG, "" + heWeather.aqi.city.pm25);
+//                        Log.v(TAG, "" + heWeather.now.tmp);
+//                    }
+//                });
 
-                    }
+        AccountManager accountManager = (AccountManager) getSystemService(Service.ACCOUNT_SERVICE);
 
-                    @Override
-                    public void onError(Throwable e) {
-                        e.printStackTrace();
-                        Log.d(TAG, "onError() called with: e = [" + e + "]");
-                    }
+//        Account account = new Account("zyj", "com.zhangyangjing.weather");
+//        accountManager.getAuthToken(account, "authtype", null, this, new AccountManagerCallback<Bundle>() {
+//            @Override
+//            public void run(AccountManagerFuture<Bundle> accountManagerFuture) {
+//                Log.d(TAG, "run() called with: accountManagerFuture = [" + accountManagerFuture + "]");
+//            }
+//        }, null);
 
-                    @Override
-                    public void onNext(HeWeatherData heWeather) {
-                        Log.d(TAG, "onNext() called with: heWeather = [" + heWeather + "]");
-                        Log.v(TAG, "" + heWeather.status);
-                        Log.v(TAG, "" + heWeather.aqi.city.pm25);
-                        Log.v(TAG, "" + heWeather.now.tmp);
-                    }
-                });
+
+        AccountManagerFuture future = accountManager.getAuthTokenByFeatures("com.zhangyangjing.weather", "kkkauthtype", null, this, null, null, new AccountManagerCallback<Bundle>() {
+            @Override
+            public void run(AccountManagerFuture<Bundle> accountManagerFuture) {
+                Log.d(TAG, "run() called with: accountManagerFuture = [" + accountManagerFuture + "]");
+            }
+        }, null);
 
         if (SearchStatus.NORMAL == mSearchStatus) {
             enterSearchMode();
