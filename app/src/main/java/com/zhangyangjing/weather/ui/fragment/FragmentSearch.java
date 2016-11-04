@@ -145,24 +145,10 @@ public class FragmentSearch extends Fragment {
                 .setListener(new AnimatorListenerAdapter() {
                     @Override
                     public void onAnimationEnd(Animator animation) {
+                        super.onAnimationEnd(animation);
                         ImeUtils.showIme(mSearchView);
-                    }
-                })
-                .start();
-
-        mSearchView.setQuery("", false);
-        mSearchView.setVisibility(View.VISIBLE);
-        mSearchView.setAlpha(0.0f);
-        mSearchView.animate()
-                .alpha(1.0f)
-                .setStartDelay(100)
-                .setDuration(AnimUtils.ANIM_DURATION_MEDIUM)
-                .setInterpolator(AnimUtils.getFastOutSlowInInterpolator(getContext()))
-                .setListener(new AnimatorListenerAdapter() {
-                    @Override
-                    public void onAnimationEnd(Animator animation) {
+                        mSearchView.setQuery("", false);
                         mSearchView.setVisibility(View.VISIBLE);
-                        mSearchView.setAlpha(1.0f);
                         mSearchView.requestFocus();
                     }
                 })
@@ -181,21 +167,14 @@ public class FragmentSearch extends Fragment {
 
         mBtnSearchback.animate()
                 .translationX(mBtnSearchBackOffsetRight)
-                .setDuration(AnimUtils.ANIM_DURATION_SHORT)
-                .setInterpolator(AnimUtils.getFastOutSlowInInterpolator(getContext()))
-                .setStartDelay(100)
-                .start();
-
-        ImeUtils.hideIme(mSearchView);
-        mSearchView.animate()
-                .alpha(0.0f)
-                .setDuration(AnimUtils.ANIM_DURATION_SHORT)
+                .setDuration(AnimUtils.ANIM_DURATION_MEDIUM)
                 .setInterpolator(AnimUtils.getFastOutSlowInInterpolator(getContext()))
                 .setListener(new AnimatorListenerAdapter() {
                     @Override
-                    public void onAnimationEnd(Animator animation) {
+                    public void onAnimationStart(Animator animation) {
+                        super.onAnimationStart(animation);
+                        ImeUtils.hideIme(mSearchView);
                         mSearchView.setVisibility(View.GONE);
-                        mSearchView.clearFocus();
                     }
                 })
                 .start();
