@@ -8,9 +8,8 @@ import android.content.SyncResult;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.zhangyangjing.weather.settings.SettingsUtil;
 import com.zhangyangjing.weather.sync.heweather.Heweather;
-
-import static android.preference.PreferenceManager.getDefaultSharedPreferences;
 
 /**
  * Created by zhangyangjing on 03/11/2016.
@@ -27,9 +26,16 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
     }
 
     @Override
-    public void onPerformSync(Account account, Bundle bundle, String authority, ContentProviderClient contentProviderClient, SyncResult syncResult) {
-        Log.d(TAG, "onPerformSync() called with: account = [" + account + "], bundle = [" + bundle + "], authority = [" + authority + "], contentProviderClient = [" + contentProviderClient + "], syncResult = [" + syncResult + "]");
-        String city = getDefaultSharedPreferences(mContext).getString("current_city", "CN101010100");
+    public void onPerformSync(Account account, Bundle bundle, String authority,
+                              ContentProviderClient contentProviderClient, SyncResult syncResult) {
+        Log.d(TAG, "onPerformSync() called with: account = ["
+                + account + "], bundle = ["
+                + bundle + "], authority = ["
+                + authority + "], contentProviderClient = ["
+                + contentProviderClient + "], syncResult = ["
+                + syncResult + "]");
+       
+        String city = SettingsUtil.getCurrentCity(mContext);
         Heweather.sync(mContext.getContentResolver(), city);
     }
 }

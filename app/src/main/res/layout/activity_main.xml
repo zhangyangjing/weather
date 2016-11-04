@@ -6,15 +6,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context=".ActivityMain">
+    tools:context=".ui.ActivityMain">
 
     <View
         android:id="@+id/scrim"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="gone"
         android:alpha="0.7"
-        android:background="@color/colorPrimaryDark"/>
+        android:background="@color/colorPrimaryDark"
+        android:visibility="gone"/>
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/app_bar"
@@ -30,32 +30,30 @@
             android:minHeight="?attr/actionBarSize"
             app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
-            <FrameLayout
+            <fragment
+                android:id="@+id/frg_search"
+                android:name="com.zhangyangjing.weather.ui.fragment.FragmentSearch"
                 android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                app:layout_collapseMode="pin">
+                android:layout_height="?attr/actionBarSize"/>
 
-                <android.support.v7.widget.SearchView
-                    android:id="@+id/search_view"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginLeft="35dp"
-                    android:iconifiedByDefault="false"
-                    android:visibility="gone"
-                    app:iconifiedByDefault="false"
-                    app:searchIcon="@null"/>
-
-                <ImageButton
-                    android:id="@+id/btnSearchback"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:background="@android:color/transparent"
-                    android:gravity="center"
-                    android:src="@drawable/animate_add_to_back"/>
-
-            </FrameLayout>
 
         </android.support.design.widget.CollapsingToolbarLayout>
     </android.support.design.widget.AppBarLayout>
 
+
+    <Button
+        android:id="@+id/btn_test_sync"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="50dp"
+        android:layout_marginTop="300dp"
+        android:text="Sync"/>
+
+    <Button
+        android:id="@+id/btn_test_query"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="150dp"
+        android:layout_marginTop="300dp"
+        android:text="Query"/>
 </android.support.design.widget.CoordinatorLayout>

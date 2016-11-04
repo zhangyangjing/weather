@@ -1,0 +1,27 @@
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.zhangyangjing.weather.ui.fragment.FragmentSearch">
+
+    <android.support.v7.widget.SearchView
+        android:id="@+id/search_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="35dp"
+        android:iconifiedByDefault="false"
+        android:visibility="gone"
+        app:iconifiedByDefault="false"
+        app:searchIcon="@null"/>
+
+    <ImageButton
+        android:id="@+id/btnSearchback"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:background="@android:color/transparent"
+        android:gravity="center"
+        android:src="@drawable/animate_add_to_back"/>
+
+</FrameLayout>

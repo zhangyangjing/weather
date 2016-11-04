@@ -21,12 +21,12 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".ActivityMain"
+            android:name=".ui.ActivityMain"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
         <activity
-            android:name=".ActivityGuide"
+            android:name=".ui.ActivityGuide"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_guide"
             android:theme="@style/FullscreenTheme">
@@ -69,10 +69,6 @@
             android:name="city_data_version"
             android:resource="@integer/city_data_version"/>
 
-        <activity
-            android:name=".LoginActivity"
-            android:label="@string/title_activity_login">
-        </activity>
     </application>
 
 </manifest>

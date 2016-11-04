@@ -8,6 +8,9 @@ import android.view.animation.Interpolator;
  * Created by zhangyangjing on 01/11/2016.
  */
 public class AnimUtils {
+    public static final int ANIM_DURATION_SHORT = 195;
+    public static final int ANIM_DURATION_MEDIUM = 225;
+    public static final int ANIM_DURATION_LONG = 375;
 
     private AnimUtils() {
     }

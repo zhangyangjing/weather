@@ -7,16 +7,14 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.util.Log;
 
+import com.zhangyangjing.weather.settings.SettingsUtil;
 import com.zhangyangjing.weather.util.CityDataImporter;
-
-import static android.preference.PreferenceManager.getDefaultSharedPreferences;
 
 
 public class DataBootstrapService extends IntentService {
     private static final String TAG = DataBootstrapService.class.getSimpleName();
 
-    private static final Boolean DEBUG = true;
-    private static final String KEY_CITY_DATA_VERSION = "city_data_version";
+    private static final Boolean DEBUG = false;
     public static final String ACTION_IMPORT_FINISH = "import_finish";
 
     public DataBootstrapService() {
@@ -25,7 +23,7 @@ public class DataBootstrapService extends IntentService {
 
     public static boolean startDatastrapIfNecessary(Context context) {
 
-        int currentVersion = getCurrentVersion(context);
+        int currentVersion = SettingsUtil.getCitydataVersion(context);
         int newVersion = getNewVersion(context);
         if (newVersion <= currentVersion)
             return false;
@@ -35,8 +33,19 @@ public class DataBootstrapService extends IntentService {
         return true;
     }
 
-    private static int getCurrentVersion(Context context) {
-        return getDefaultSharedPreferences(context).getInt(KEY_CITY_DATA_VERSION, -1);
+    @Override
+    protected void onHandleIntent(Intent intent) {
+        try {
+            if (DEBUG) Log.d(TAG, "onHandleIntent() called with: intent = [" + intent + "]");
+
+            CityDataImporter.importData(this, "city.data");
+            SettingsUtil.setCitydataVersion(this, getNewVersion(this));
+
+            Intent broadcastIntent = new Intent(ACTION_IMPORT_FINISH);
+            sendBroadcast(broadcastIntent);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private static int getNewVersion(Context context) {
@@ -47,24 +56,6 @@ public class DataBootstrapService extends IntentService {
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
             return -1;
-        }
-    }
-
-    @Override
-    protected void onHandleIntent(Intent intent) {
-        try {
-            if (DEBUG) Log.d(TAG, "onHandleIntent() called with: intent = [" + intent + "]");
-
-            CityDataImporter.importData(this, "city.data");
-
-            int newVersion = getNewVersion(this);
-            getDefaultSharedPreferences(this).edit()
-                    .putInt(KEY_CITY_DATA_VERSION, newVersion).apply();
-
-            Intent broadcastIntent = new Intent(ACTION_IMPORT_FINISH);
-            sendBroadcast(broadcastIntent);
-        } catch (Exception e) {
-            e.printStackTrace();
         }
     }
 }

@@ -3,7 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:contentAuthority="com.zhangyangjing.weather"
     android:accountType="com.zhangyangjing.weather.normal_sync"
-    android:userVisible="true"
-    android:supportsUploading="true"
+    android:userVisible="false"
+    android:supportsUploading="false"
     android:allowParallelSyncs="true"
     android:isAlwaysSyncable="true"/>
