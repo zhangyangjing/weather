@@ -73,7 +73,9 @@ public class ActivityMain extends AppCompatActivity implements FragmentSearch.Se
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        return mFrgSearch.onKeyDown(keyCode, event);
+        if (true == mFrgSearch.onKeyDown(keyCode, event))
+            return true;
+        return super.onKeyDown(keyCode, event);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)

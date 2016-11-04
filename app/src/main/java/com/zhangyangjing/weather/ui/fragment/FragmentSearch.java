@@ -43,6 +43,7 @@ public class FragmentSearch extends Fragment {
     private static final String TAG = FragmentSearch.class.getSimpleName();
     private static final boolean DEBUG = true;
 
+    private static final int LOADER_ID = 0;
     private static final String KEY_FILTER = "filter";
 
     private SearchStatus mSearchStatus;
@@ -94,7 +95,6 @@ public class FragmentSearch extends Fragment {
 
         mSearchStatus = SearchStatus.NORMAL;
         mLoaderManagerCallback = new MyLoaderManagerCallback();
-        getLoaderManager().initLoader(0, null, mLoaderManagerCallback);
     }
 
     @Override
@@ -168,6 +168,7 @@ public class FragmentSearch extends Fragment {
                 })
                 .start();
 
+        getLoaderManager().initLoader(LOADER_ID, null, mLoaderManagerCallback);
         mSearchStatus = SearchStatus.SEARCH;
         mListener.onEnterSearch(mBtnSearchBackOffsetRight, mBtnSearchback.getBottom());
     }
@@ -198,6 +199,8 @@ public class FragmentSearch extends Fragment {
                     }
                 })
                 .start();
+
+        getLoaderManager().destroyLoader(LOADER_ID);
         mSearchStatus = SearchStatus.NORMAL;
         mListener.onExitSearch();
     }
