@@ -1,14 +1,15 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             xmlns:auto="http://schemas.android.com/apk/res-auto"
              xmlns:tools="http://schemas.android.com/tools"
              android:layout_width="match_parent"
              android:layout_height="200dp"
              tools:context="com.zhangyangjing.weather.ui.fragment.BlankFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:gravity="center"
+    <com.zhangyangjing.weather.ui.StyleTextView
+        auto:style="OswaldLight"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:gravity="center"
         android:text="@string/hello_blank_fragment"/>
 
 </FrameLayout>
