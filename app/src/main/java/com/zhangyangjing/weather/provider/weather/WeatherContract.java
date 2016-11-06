@@ -117,6 +117,10 @@ public class WeatherContract {
     public static class WeatherNow extends WeatherQueryBase implements WeatherNowColumns {
         public static final String CONTENT_TYPE_ID = "weather_now";
 
+        public static final String UV_LOW = "Low";
+        public static final String UV_MED = "Med";
+        public static final String UV_HIG = "Hig";
+
         public static Uri buildQueryUri(String city) {
             return City.CONTENT_URI.buildUpon()
                     .appendEncodedPath(city)

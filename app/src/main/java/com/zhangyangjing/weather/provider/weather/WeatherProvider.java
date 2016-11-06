@@ -172,6 +172,7 @@ public class WeatherProvider extends ContentProvider {
         if (null == data)
             return cursor;
 
+
         cursor.addRow(new String[]{
                 city,
                 data.aqi.city.aqi,
@@ -186,7 +187,7 @@ public class WeatherProvider extends ContentProvider {
                 data.now.hum,
                 data.now.pres,
                 data.now.vis,
-                data.suggestion.uv.brf,
+                translateUv(data.suggestion.uv.brf),
                 data.now.wind.spd,
                 data.now.wind.sc,
                 data.now.wind.dir,
@@ -225,5 +226,23 @@ public class WeatherProvider extends ContentProvider {
         cursor.moveToFirst();
         String dataStr = cursor.getString(cursor.getColumnIndex(WeatherContract.Weather.DATA));
         return new Gson().fromJson(dataStr, HeWeatherData.class);
+    }
+
+    private String translateUv(String uvStr) {
+        String uv = WeatherContract.WeatherNow.UV;
+        switch (uvStr) {
+            case "强":
+            case "最强":
+                uv = WeatherContract.WeatherNow.UV_HIG;
+                break;
+            case "中":
+                uv = WeatherContract.WeatherNow.UV_MED;
+                break;
+            case "弱":
+            case "最弱":
+                uv = WeatherContract.WeatherNow.UV_LOW;
+                break;
+        }
+        return uv;
     }
 }
