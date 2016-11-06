@@ -10,101 +10,98 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center">
+        android:gravity="center"
+        android:paddingTop="20dp">
+
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="-16dp"
+            android:layout_marginTop="-10dp"
+            android:layout_weight="1.0">
+
+            <com.zhangyangjing.weather.ui.widget.StyleTextView
+                android:id="@+id/tv_current_temp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="9"
+                android:textSize="80sp"
+                auto:style="OswaldRegular"/>
+
+            <com.zhangyangjing.weather.ui.widget.StyleTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@id/tv_current_temp"
+                android:text="°"
+                android:textSize="80sp"
+                auto:style="OswaldRegular"/>
+
+            <com.zhangyangjing.weather.ui.widget.StyleTextView
+                android:id="@+id/tv_update_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@id/tv_current_temp"
+                android:layout_toRightOf="@id/tv_current_temp"
+                android:paddingBottom="20dp"
+                android:paddingLeft="5dp"
+                android:text="update: 3min ago"
+                android:textSize="9sp"
+                auto:style="OswaldLight"/>
+
+        </RelativeLayout>
 
         <com.zhangyangjing.weather.ui.widget.StyleTextView
             android:id="@+id/tv_weather_icon"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_weight="1.0"
+            android:gravity="center_vertical"
             android:text="  \uf004"
-            android:textSize="20sp"
+            android:textSize="45sp"
             auto:style="WeatherIcons"/>
-
-        <com.zhangyangjing.weather.ui.widget.StyleTextView
-            android:id="@+id/tv_weather_desc"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text=" Clear"
-            android:textSize="20sp"
-            auto:style="OswaldRegular"/>
     </LinearLayout>
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="-16dp"
-        android:layout_marginTop="-10dp">
-
-        <com.zhangyangjing.weather.ui.widget.StyleTextView
-            android:id="@+id/tv_current_temp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:text="9"
-            android:textSize="80sp"
-            auto:style="OswaldRegular"/>
-
-        <com.zhangyangjing.weather.ui.widget.StyleTextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toRightOf="@id/tv_current_temp"
-            android:text="°"
-            android:textSize="80sp"
-            auto:style="OswaldRegular"/>
-
-        <com.zhangyangjing.weather.ui.widget.StyleTextView
-            android:id="@+id/tv_update_time"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignBottom="@id/tv_current_temp"
-            android:layout_toRightOf="@id/tv_current_temp"
-            android:paddingBottom="20dp"
-            android:paddingLeft="5dp"
-            android:text="update: 3min ago"
-            android:textSize="9sp"
-            auto:style="OswaldLight"/>
-
-    </RelativeLayout>
 
     <!--<LinearLayout-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:gravity="center"-->
-        <!--android:orientation="horizontal">-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:gravity="center"-->
+    <!--android:orientation="horizontal">-->
 
-        <!--<com.zhangyangjing.weather.ui.widget.StyleTextView-->
-            <!--android:id="@+id/tv_temp_high"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:gravity="center"-->
-            <!--android:text="9"-->
-            <!--android:textSize="15sp"-->
-            <!--auto:style="OswaldRegular"/>-->
+    <!--<com.zhangyangjing.weather.ui.widget.StyleTextView-->
+    <!--android:id="@+id/tv_temp_high"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:gravity="center"-->
+    <!--android:text="9"-->
+    <!--android:textSize="15sp"-->
+    <!--auto:style="OswaldRegular"/>-->
 
-        <!--<com.zhangyangjing.weather.ui.widget.StyleTextView-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:gravity="center"-->
-            <!--android:text="°/"-->
-            <!--android:textSize="15sp"-->
-            <!--auto:style="OswaldRegular"/>-->
+    <!--<com.zhangyangjing.weather.ui.widget.StyleTextView-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:gravity="center"-->
+    <!--android:text="°/"-->
+    <!--android:textSize="15sp"-->
+    <!--auto:style="OswaldRegular"/>-->
 
-        <!--<com.zhangyangjing.weather.ui.widget.StyleTextView-->
-            <!--android:id="@+id/tv_temp_low"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:gravity="center"-->
-            <!--android:text="4"-->
-            <!--android:textSize="15sp"-->
-            <!--auto:style="OswaldRegular"/>-->
+    <!--<com.zhangyangjing.weather.ui.widget.StyleTextView-->
+    <!--android:id="@+id/tv_temp_low"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:gravity="center"-->
+    <!--android:text="4"-->
+    <!--android:textSize="15sp"-->
+    <!--auto:style="OswaldRegular"/>-->
 
-        <!--<com.zhangyangjing.weather.ui.widget.StyleTextView-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:gravity="center"-->
-            <!--android:text="°"-->
-            <!--android:textSize="15sp"-->
-            <!--auto:style="OswaldRegular"/>-->
+    <!--<com.zhangyangjing.weather.ui.widget.StyleTextView-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:gravity="center"-->
+    <!--android:text="°"-->
+    <!--android:textSize="15sp"-->
+    <!--auto:style="OswaldRegular"/>-->
     <!--</LinearLayout>-->
 
 

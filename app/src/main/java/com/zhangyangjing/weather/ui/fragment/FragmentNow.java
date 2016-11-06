@@ -36,7 +36,6 @@ public class FragmentNow extends Fragment implements LoaderManager.LoaderCallbac
     private static final String LOADER_PARAM_CITY = "city";
 
     @BindView(R.id.tv_weather_icon) TextView mTvWeatherIcon;
-    @BindView(R.id.tv_weather_desc) TextView mTvWeatherDesc;
     @BindView(R.id.tv_current_temp) TextView mTvCurrentTemp;
     @BindView(R.id.tv_update_time) TextView mTvUpdateTime;
 //    @BindView(R.id.tv_temp_high) TextView mTvTempHight;
