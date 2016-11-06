@@ -5,10 +5,11 @@
              android:layout_height="200dp"
              tools:context="com.zhangyangjing.weather.ui.fragment.BlankFragment">
 
-    <com.zhangyangjing.weather.ui.StyleTextView
-        auto:style="OswaldLight"
+    <com.zhangyangjing.weather.ui.widget.StyleTextView
+        auto:style="OswaldDei_bold"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:textSize="20sp"
         android:gravity="center"
         android:text="@string/hello_blank_fragment"/>
 

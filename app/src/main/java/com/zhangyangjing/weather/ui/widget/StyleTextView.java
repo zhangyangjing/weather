@@ -1,4 +1,4 @@
-package com.zhangyangjing.weather.ui;
+package com.zhangyangjing.weather.ui.widget;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -40,7 +40,7 @@ public class StyleTextView extends TextView {
         try {
             typeFaceEnum = TypeFaceEnum.valueOf(style);
         } catch (IllegalArgumentException e) {
-            e.printStackTrace();
+            return;
         }
 
         Typeface typeface = sTypeFaces.get(typeFaceEnum);
@@ -56,7 +56,8 @@ public class StyleTextView extends TextView {
         OswaldDei_bold("Oswald-DemiBold.ttf"),
         OswaldMedium("Oswald-Medium.ttf"),
         OswaldLight("Oswald-Light.ttf"),
-        OswaldRegular("Oswald-Regular.ttf");
+        OswaldRegular("Oswald-Regular.ttf"),
+        WeatherIcons("WeatherIcons.ttf");
 
         String path;
 

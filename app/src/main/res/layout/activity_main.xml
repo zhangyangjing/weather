@@ -36,6 +36,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"/>
 
+            <fragment
+                android:id="@+id/frg_now"
+                android:name="com.zhangyangjing.weather.ui.fragment.FragmentNow"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
 
         </android.support.design.widget.CollapsingToolbarLayout>
     </android.support.design.widget.AppBarLayout>
