@@ -60,6 +60,7 @@ public class WeatherContract {
         String HUM = "hum"; // 湿度(%)
         String PRES = "pres"; // 气压
         String VIS = "vis"; // 能见度(km)
+        String UV = "uv"; // 紫外线
         String WSPD = "wind_spd"; // 风速(Kmph)
         String WSCD = "wind_scd"; // 风力等级
         String WDIR = "wind_dir"; // 风向(方向)
@@ -139,6 +140,7 @@ public class WeatherContract {
                     HUM,
                     PRES,
                     VIS,
+                    UV,
                     WSPD,
                     WSCD,
                     WDIR,

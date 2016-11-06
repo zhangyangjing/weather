@@ -24,4 +24,7 @@ public class HeWeatherData {
     @SerializedName("status")
     @Expose
     public String status;
+    @SerializedName("suggestion")
+    @Expose
+    public Suggestion suggestion;
 }

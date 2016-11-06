@@ -186,6 +186,7 @@ public class WeatherProvider extends ContentProvider {
                 data.now.hum,
                 data.now.pres,
                 data.now.vis,
+                data.suggestion.uv.brf,
                 data.now.wind.spd,
                 data.now.wind.sc,
                 data.now.wind.dir,
