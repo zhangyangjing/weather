@@ -44,7 +44,7 @@
                 android:layout_alignBottom="@id/tv_current_temp"
                 android:layout_toRightOf="@id/tv_current_temp"
                 android:paddingBottom="20dp"
-                android:paddingLeft="5dp"
+                android:paddingLeft="8dp"
                 android:text="update: 3min ago"
                 android:textSize="9sp"
                 auto:style="OswaldLight"/>
@@ -123,7 +123,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:text="NE3.0m/s"
-                android:textSize="15sp"
+                android:textSize="18sp"
                 auto:style="OswaldRegular"/>
 
             <com.zhangyangjing.weather.ui.widget.StyleTextView
@@ -148,7 +148,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:text="59%"
-                android:textSize="15sp"
+                android:textSize="18sp"
                 auto:style="OswaldRegular"/>
 
             <com.zhangyangjing.weather.ui.widget.StyleTextView
@@ -173,7 +173,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:text="7°"
-                android:textSize="15sp"
+                android:textSize="18sp"
                 auto:style="OswaldRegular"/>
 
             <com.zhangyangjing.weather.ui.widget.StyleTextView
@@ -198,7 +198,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:text="Low"
-                android:textSize="15sp"
+                android:textSize="18sp"
                 auto:style="OswaldRegular"/>
 
             <com.zhangyangjing.weather.ui.widget.StyleTextView
@@ -231,7 +231,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:text="8KM"
-                android:textSize="15sp"
+                android:textSize="18sp"
                 auto:style="OswaldRegular"/>
 
             <com.zhangyangjing.weather.ui.widget.StyleTextView
@@ -256,7 +256,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:text="1026.0hPa"
-                android:textSize="15sp"
+                android:textSize="18sp"
                 auto:style="OswaldRegular"/>
 
             <com.zhangyangjing.weather.ui.widget.StyleTextView
@@ -281,7 +281,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:text="1°"
-                android:textSize="15sp"
+                android:textSize="18sp"
                 auto:style="OswaldRegular"/>
 
             <com.zhangyangjing.weather.ui.widget.StyleTextView
@@ -306,7 +306,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:text="163"
-                android:textSize="15sp"
+                android:textSize="18sp"
                 auto:style="OswaldRegular"/>
 
             <com.zhangyangjing.weather.ui.widget.StyleTextView
