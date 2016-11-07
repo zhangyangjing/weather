@@ -34,6 +34,7 @@
                 android:id="@+id/frg_search"
                 android:name="com.zhangyangjing.weather.ui.fragment.FragmentSearch"
                 android:layout_width="match_parent"
+                app:layout_collapseMode="pin"
                 android:layout_height="?attr/actionBarSize"/>
 
             <fragment
