@@ -15,6 +15,7 @@ import android.support.v4.content.Loader;
 import android.support.v4.view.animation.FastOutSlowInInterpolator;
 import android.text.Spannable;
 import android.text.SpannableString;
+import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.style.RelativeSizeSpan;
 import android.view.LayoutInflater;
@@ -169,7 +170,7 @@ public class FragmentNow extends Fragment implements LoaderManager.LoaderCallbac
     }
 
     private Spannable generateWindInfo(String direct, int speed) {
-        return generateSpannableString(speed, "m/s");
+        return new SpannableStringBuilder(direct).append(generateSpannableString(speed, "m/s"));
     }
 
     private int getStatusBarHeight() {

@@ -172,7 +172,6 @@ public class WeatherProvider extends ContentProvider {
         if (null == data)
             return cursor;
 
-
         cursor.addRow(new String[]{
                 city,
                 data.aqi.city.aqi,
@@ -190,7 +189,7 @@ public class WeatherProvider extends ContentProvider {
                 translateUv(data.suggestion.uv.brf),
                 data.now.wind.spd,
                 data.now.wind.sc,
-                data.now.wind.dir,
+                translateWindDirect(data.now.wind.dir),
                 data.now.wind.deg});
 
         return cursor;
@@ -229,7 +228,7 @@ public class WeatherProvider extends ContentProvider {
     }
 
     private String translateUv(String uvStr) {
-        String uv = WeatherContract.WeatherNow.UV;
+        String uv = WeatherContract.WeatherNow.UV_MED;
         switch (uvStr) {
             case "强":
             case "最强":
@@ -244,5 +243,36 @@ public class WeatherProvider extends ContentProvider {
                 break;
         }
         return uv;
+    }
+
+    private String translateWindDirect(String windDir) {
+        String wd = WeatherContract.WeatherNow.WD_E;
+        switch (windDir) {
+            case "北风":
+                wd = WeatherContract.WeatherNow.WD_N;
+                break;
+            case "东北风":
+                wd = WeatherContract.WeatherNow.WD_NE;
+                break;
+            case "东风":
+                wd = WeatherContract.WeatherNow.WD_E;
+                break;
+            case "东南风":
+                wd = WeatherContract.WeatherNow.WD_SE;
+                break;
+            case "南风":
+                wd = WeatherContract.WeatherNow.WD_S;
+                break;
+            case "西南风":
+                wd = WeatherContract.WeatherNow.WD_SW;
+                break;
+            case "西风":
+                wd = WeatherContract.WeatherNow.WD_W;
+                break;
+            case "西北风":
+                wd = WeatherContract.WeatherNow.WD_NW;
+                break;
+        }
+        return wd;
     }
 }

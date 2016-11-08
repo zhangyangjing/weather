@@ -121,6 +121,15 @@ public class WeatherContract {
         public static final String UV_MED = "Med";
         public static final String UV_HIG = "Hig";
 
+        public static final String WD_N = "N";
+        public static final String WD_NE = "NE";
+        public static final String WD_E = "E";
+        public static final String WD_SE = "SE";
+        public static final String WD_S = "S";
+        public static final String WD_SW = "SW";
+        public static final String WD_W = "W";
+        public static final String WD_NW = "NW";
+
         public static Uri buildQueryUri(String city) {
             return City.CONTENT_URI.buildUpon()
                     .appendEncodedPath(city)
