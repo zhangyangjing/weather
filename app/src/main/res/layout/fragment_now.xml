@@ -3,8 +3,9 @@
     xmlns:auto="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="300dp"
+    android:layout_height="wrap_content"
     android:orientation="vertical"
+    android:fitsSystemWindows="true"
     tools:context="com.zhangyangjing.weather.ui.fragment.FragmentNow">
 
     <LinearLayout
@@ -106,9 +107,10 @@
 
 
     <LinearLayout
+        android:id="@+id/detail_line1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="40dp"
+        android:paddingLeft="40dp"
         android:layout_marginTop="8dp">
 
         <LinearLayout
@@ -214,9 +216,10 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/detail_line2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="40dp"
+        android:paddingLeft="40dp"
         android:layout_marginTop="8dp">
 
         <LinearLayout
@@ -318,7 +321,5 @@
                 android:textSize="9sp"/>
 
         </LinearLayout>
-
     </LinearLayout>
-
 </LinearLayout>

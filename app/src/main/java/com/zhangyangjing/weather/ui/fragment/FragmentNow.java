@@ -1,21 +1,26 @@
 package com.zhangyangjing.weather.ui.fragment;
 
 import android.database.Cursor;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
+import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.CoordinatorLayout.LayoutParams;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.support.v4.view.animation.FastOutSlowInInterpolator;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.style.RelativeSizeSpan;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Interpolator;
 import android.widget.TextView;
 
 import com.zhangyangjing.weather.R;
@@ -49,17 +54,26 @@ public class FragmentNow extends Fragment implements LoaderManager.LoaderCallbac
     @BindView(R.id.tv_pm10) TextView mTvPm10;
     @BindView(R.id.tv_aqi) TextView mTvAqi;
 
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
-    }
+    @BindView(R.id.detail_line1) View mDetailLine1;
+    @BindView(R.id.detail_line2) View mDetailLine2;
 
+    Interpolator mInterpolator = new FastOutSlowInInterpolator();
+
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT_WATCH)
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(final LayoutInflater inflater,
+                             @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_now, container, false);
         ButterKnife.bind(this, view);
         return view;
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        view.setPadding(0, getStatusBarHeight(), 0, 0);
     }
 
     @Override
@@ -68,6 +82,11 @@ public class FragmentNow extends Fragment implements LoaderManager.LoaderCallbac
         Bundle bundle = new Bundle();
         bundle.putString(LOADER_PARAM_CITY, SettingsUtil.getCurrentCity(getContext()));
         getLoaderManager().initLoader(LOADER_ID, bundle, this);
+
+        LayoutParams params = (LayoutParams) getView().getLayoutParams();
+        CoordinatorLayout.Behavior behavior = params.getBehavior();
+        if (null == behavior)
+            params.setBehavior(new FragmentNow.Behavior(this));
     }
 
     @Override
@@ -87,27 +106,10 @@ public class FragmentNow extends Fragment implements LoaderManager.LoaderCallbac
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
-//            String AQI = "aqi";
-//            String CO = "co";
-//            String NO2 = "no2";
-//            String O3 = "o3";
-//            String PM10 = "pm10";
-//            String PM25 = "pm25";
-//            String SO2 = "so2";
-//            String TMP = "tmp"; // 当前温度(摄氏度)
-//            String FL = "fl"; // 体感温度
-//            String HUM = "hum"; // 湿度(%)
-//            String PRES = "pres"; // 气压
-//            String VIS = "vis"; // 能见度(km)
-//            String WSPD = "wind_spd"; // 风速(Kmph)
-//            String WSCD = "wind_scd"; // 风力等级
-//            String WDIR = "wind_dir"; // 风向(方向)
-//            String WDEG = "wind_deg"; // 风向(角度)
-
         cursor.moveToFirst();
-//        cursor.getInt(cursor.getColumnIndex(WeatherContract.WeatherNow.WDIR));
         int humidity = cursor.getInt(cursor.getColumnIndex(WeatherContract.WeatherNow.HUM));
         int windSpeed = cursor.getInt(cursor.getColumnIndex(WeatherContract.WeatherNow.WSPD));
+        String windDir = cursor.getString(cursor.getColumnIndex(WeatherContract.WeatherNow.WDIR));
         int temp = cursor.getInt(cursor.getColumnIndex(WeatherContract.WeatherNow.TMP));
         int feelLike = cursor.getInt(cursor.getColumnIndex(WeatherContract.WeatherNow.FL));
         int pm25 = cursor.getInt(cursor.getColumnIndex(WeatherContract.WeatherNow.PM25));
@@ -116,9 +118,9 @@ public class FragmentNow extends Fragment implements LoaderManager.LoaderCallbac
         int visibility = cursor.getInt(cursor.getColumnIndex(WeatherContract.WeatherNow.VIS));
         String uv = cursor.getString(cursor.getColumnIndex(WeatherContract.WeatherNow.UV));
 
-        mTvWind.setText(generateSpanableString(windSpeed, "m/s"));
-        mTvHumidity.setText(generateSpanableString(humidity, "%"));
-        mTvVisibility.setText(generateSpanableString(visibility, "KM"));
+        mTvWind.setText(generateWindInfo(windDir, windSpeed));
+        mTvHumidity.setText(generateSpannableString(humidity, "%"));
+        mTvVisibility.setText(generateSpannableString(visibility, "KM"));
         mTvCurrentTemp.setText(temp + "");
         mTvFellLike.setText(feelLike + "°");
         mTvPm10.setText(pm10 + "");
@@ -132,7 +134,31 @@ public class FragmentNow extends Fragment implements LoaderManager.LoaderCallbac
 
     }
 
-    private Spannable generateSpanableString(int value, String SizeStr) {
+    void updateBottom(int bottom) {
+        updateDetailLine(mDetailLine1, bottom);
+        updateDetailLine(mDetailLine2, bottom);
+    }
+
+    private void updateDetailLine(View line, int bottom) {
+        int height = line.getHeight();
+
+        line.setPivotY(0);
+
+        int invisibleHeight = line.getBottom() - height/2;
+        if (bottom <= invisibleHeight) {
+            line.setVisibility(View.GONE);
+        } else {
+            line.setVisibility(View.VISIBLE);
+            float rate = Math.min((bottom-invisibleHeight)/(height/2f), 1.0f);
+            rate = 1 - mInterpolator.getInterpolation(1 - rate); // reverse interpolator
+            float scale = 0.5f + rate/2f;
+            line.setAlpha(rate);
+            line.setScaleY(scale);
+            line.setScaleX(scale);
+        }
+    }
+
+    private Spannable generateSpannableString(int value, String SizeStr) {
         Spannable span = new SpannableString(value + SizeStr);
         span.setSpan(
                 new RelativeSizeSpan(0.5f),
@@ -140,5 +166,42 @@ public class FragmentNow extends Fragment implements LoaderManager.LoaderCallbac
                 span.length(),
                 Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
         return span;
+    }
+
+    private Spannable generateWindInfo(String direct, int speed) {
+        return generateSpannableString(speed, "m/s");
+    }
+
+    private int getStatusBarHeight() {
+        int result = 0;
+        int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
+        if (resourceId > 0) {
+            result = getResources().getDimensionPixelSize(resourceId);
+        }
+        return result;
+    }
+
+    public static class Behavior<V extends View> extends CoordinatorLayout.Behavior<V> {
+        private static final String TAG = Behavior.class.getSimpleName();
+
+        private FragmentNow mFragmentNow;
+
+        public Behavior(FragmentNow fragmentNow) {
+            mFragmentNow = fragmentNow;
+        }
+
+        @Override
+        public boolean layoutDependsOn(CoordinatorLayout parent, V child, View dependency) {
+            if (dependency.getClass() == AppBarLayout.class)
+                return true;
+            return false;
+        }
+
+        @Override
+        public boolean onDependentViewChanged(CoordinatorLayout parent, V child, View dependency) {
+            child.setBottom(dependency.getBottom());
+            mFragmentNow.updateBottom(dependency.getBottom());
+            return super.onDependentViewChanged(parent, child, dependency);
+        }
     }
 }
