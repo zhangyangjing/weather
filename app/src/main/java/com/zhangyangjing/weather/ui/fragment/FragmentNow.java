@@ -44,9 +44,9 @@ public class FragmentNow extends Fragment implements LoaderManager.LoaderCallbac
     private static final int LOADER_ID = 0;
     private static final String LOADER_PARAM_CITY = "city";
 
-    private static final int TARGET_CURRENT_TEMP_TEXT_SIZE = 26; // dp
-    private static final int TARGET_WEATHER_ICON_TEXT_SIZE = 23; // dp
-    private static final int TARGET_WEATHER_INFO_MARGIN_TOP = 10; // dp
+    private static final int TARGET_CURRENT_TEMP_TEXT_SIZE = 16; // dp
+    private static final int TARGET_WEATHER_ICON_TEXT_SIZE = 16; // dp
+    private static final int TARGET_WEATHER_INFO_MARGIN_TOP = 18; // dp
 
     @BindView(R.id.tv_weather_icon) TextView mTvWeatherIcon;
     @BindView(R.id.tv_current_temp) TextView mTvCurrentTemp;

@@ -52,8 +52,8 @@
             android:layout_centerVertical="true"
             android:layout_weight="1.0"
             android:gravity="center_vertical"
-            android:text="  \uf004"
-            android:textSize="45sp"
+            android:text="\uf004"
+            android:textSize="35sp"
             auto:style="WeatherIcons"/>
     </RelativeLayout>
 

@@ -27,6 +27,8 @@ public class FragmentDistricts extends Fragment implements View.OnLayoutChangeLi
 
     private FragmentDistricsListener mListener;
 
+    // TODO: 使用自定义Spinner，自动缩放宽度。右侧放更新时间，collapse时可自动隐藏
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
