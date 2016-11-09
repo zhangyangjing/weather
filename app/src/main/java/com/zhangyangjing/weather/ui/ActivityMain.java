@@ -22,6 +22,8 @@ import android.view.ViewAnimationUtils;
 import com.zhangyangjing.weather.R;
 import com.zhangyangjing.weather.provider.weather.WeatherContract;
 import com.zhangyangjing.weather.settings.SettingsUtil;
+import com.zhangyangjing.weather.ui.fragment.FragmentDistricts;
+import com.zhangyangjing.weather.ui.fragment.FragmentNow;
 import com.zhangyangjing.weather.ui.fragment.FragmentSearch;
 import com.zhangyangjing.weather.util.AccountUtil;
 import com.zhangyangjing.weather.util.AnimUtils;
@@ -30,11 +32,13 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class ActivityMain extends AppCompatActivity implements FragmentSearch.SearchListener {
+public class ActivityMain extends AppCompatActivity implements FragmentSearch.SearchListener,
+        FragmentDistricts.FragmentDistricsListener {
     private static final String TAG = ActivityMain.class.getSimpleName();
     private static final boolean DEBUG = true;
 
     private MyLoaderManagerCallback mLoaderManagerCallback;
+    private FragmentNow mFrgNow;
     private FragmentSearch mFrgSearch;
 
     @BindView(R.id.scrim)
@@ -49,6 +53,7 @@ public class ActivityMain extends AppCompatActivity implements FragmentSearch.Se
 
         mLoaderManagerCallback = new MyLoaderManagerCallback(this);
         mFrgSearch = (FragmentSearch) getSupportFragmentManager().findFragmentById(R.id.frg_search);
+        mFrgNow = (FragmentNow) getSupportFragmentManager().findFragmentById(R.id.frg_now);
 
         getSupportLoaderManager().initLoader(0, null, mLoaderManagerCallback);
     }
@@ -113,6 +118,11 @@ public class ActivityMain extends AppCompatActivity implements FragmentSearch.Se
     @Override
     public void onSearchResult() {
 
+    }
+
+    @Override
+    public void onDistrictPositionChange(int left, int top, int right, int bottom) {
+        mFrgNow.setDistrictRect(left, top, right, bottom);
     }
 
     class MyLoaderManagerCallback implements LoaderManager.LoaderCallbacks<Cursor> {

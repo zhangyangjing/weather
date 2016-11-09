@@ -18,7 +18,6 @@ import android.support.v4.content.Loader;
 import android.support.v7.widget.SearchView;
 import android.text.TextUtils;
 import android.util.Log;
-import android.util.TypedValue;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -52,9 +51,7 @@ public class FragmentSearch extends Fragment {
     private AnimatedVectorDrawable mAnimateAddToBack;
     private AnimatedVectorDrawable mAnimateBackToAdd;
 
-    private int mBtnSearchBackOffsetLeft;
     private int mBtnSearchBackOffsetRight;
-
     private SearchListener mListener;
 
     @BindView(R.id.btnSearchback)
@@ -66,7 +63,7 @@ public class FragmentSearch extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_fragment_search, container, false);
+        View view = inflater.inflate(R.layout.fragment_search, container, false);
         ButterKnife.bind(this, view);
         return view;
     }
@@ -81,9 +78,6 @@ public class FragmentSearch extends Fragment {
         mAnimateBackToAdd = (AnimatedVectorDrawable) getContext()
                 .getDrawable(R.drawable.animate_back_to_add);
 
-        caculateSearchbackCoord();
-        mBtnSearchback.setTranslationX(mBtnSearchBackOffsetRight);
-
         int autoCompleteTextViewID = getResources()
                 .getIdentifier("search_src_text", "id", getContext().getPackageName());
         SearchView.SearchAutoComplete searchAutoComplete = (SearchView.SearchAutoComplete)
@@ -95,6 +89,16 @@ public class FragmentSearch extends Fragment {
 
         mSearchStatus = SearchStatus.NORMAL;
         mLoaderManagerCallback = new MyLoaderManagerCallback();
+
+        view.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
+            @Override
+            public void onLayoutChange(View v, int left, int top, int right, int bottom,
+                                       int oldLeft, int oldTop, int oldRight, int oldBottom) {
+                mBtnSearchBackOffsetRight = v.getWidth() - mBtnSearchback.getWidth();
+                mBtnSearchback.setTranslationX(mBtnSearchBackOffsetRight);
+                v.removeOnLayoutChangeListener(this);
+            }
+        });
     }
 
     @Override
@@ -123,15 +127,6 @@ public class FragmentSearch extends Fragment {
         }
     }
 
-    private void caculateSearchbackCoord() {
-        int screenWidth = getResources().getDisplayMetrics().widthPixels;
-        int margin = (int) TypedValue.applyDimension(
-                TypedValue.COMPLEX_UNIT_DIP, 16, getResources().getDisplayMetrics());
-        mBtnSearchBackOffsetLeft = margin;
-        mBtnSearchBackOffsetRight = screenWidth
-                - margin - mBtnSearchback.getDrawable().getIntrinsicWidth();
-    }
-
     @TargetApi(Build.VERSION_CODES.M)
     private void enterSearchMode() {
         mBtnSearchback.setImageDrawable(mAnimateAddToBack);
@@ -139,7 +134,7 @@ public class FragmentSearch extends Fragment {
         mAnimateAddToBack.start();
 
         mBtnSearchback.animate()
-                .translationX(mBtnSearchBackOffsetLeft)
+                .translationX(0)
                 .setDuration(AnimUtils.ANIM_DURATION_LONG)
                 .setInterpolator(AnimUtils.getFastOutSlowInInterpolator(getContext()))
                 .setListener(new AnimatorListenerAdapter() {

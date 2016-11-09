@@ -3,7 +3,7 @@
              xmlns:tools="http://schemas.android.com/tools"
              android:layout_width="match_parent"
              android:layout_height="200dp"
-             tools:context="com.zhangyangjing.weather.ui.fragment.BlankFragment">
+             tools:context="com.zhangyangjing.weather.ui.fragment.FragmentDistricts">
 
     <com.zhangyangjing.weather.ui.widget.StyleTextView
         auto:style="OswaldDei_bold"

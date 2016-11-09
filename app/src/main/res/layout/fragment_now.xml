@@ -4,64 +4,58 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
     android:fitsSystemWindows="true"
+    android:orientation="vertical"
+    android:gravity="center_horizontal"
     tools:context="com.zhangyangjing.weather.ui.fragment.FragmentNow">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:paddingTop="20dp">
+    <RelativeLayout
+        android:id="@+id/vg_weather_info"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
 
-        <RelativeLayout
-            android:layout_width="0dp"
+        <com.zhangyangjing.weather.ui.widget.StyleTextView
+            android:id="@+id/tv_current_temp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="-16dp"
-            android:layout_marginTop="-10dp"
-            android:layout_weight="1.0">
+            android:text="9"
+            android:textSize="80sp"
+            auto:style="OswaldRegular"/>
 
-            <com.zhangyangjing.weather.ui.widget.StyleTextView
-                android:id="@+id/tv_current_temp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:text="9"
-                android:textSize="80sp"
-                auto:style="OswaldRegular"/>
+        <com.zhangyangjing.weather.ui.widget.StyleTextView
+            android:id="@+id/tv_current_temp_metric"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/tv_current_temp"
+            android:text="°"
+            android:textSize="80sp"
+            auto:style="OswaldRegular"/>
 
-            <com.zhangyangjing.weather.ui.widget.StyleTextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_toRightOf="@id/tv_current_temp"
-                android:text="°"
-                android:textSize="80sp"
-                auto:style="OswaldRegular"/>
-
-            <com.zhangyangjing.weather.ui.widget.StyleTextView
-                android:id="@+id/tv_update_time"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignBottom="@id/tv_current_temp"
-                android:layout_toRightOf="@id/tv_current_temp"
-                android:paddingBottom="20dp"
-                android:paddingLeft="8dp"
-                android:text="update: 3min ago"
-                android:textSize="9sp"
-                auto:style="OswaldLight"/>
-
-        </RelativeLayout>
+        <com.zhangyangjing.weather.ui.widget.StyleTextView
+            android:id="@+id/tv_update_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@id/tv_current_temp"
+            android:layout_toRightOf="@id/tv_current_temp"
+            android:paddingBottom="20dp"
+            android:paddingLeft="8dp"
+            android:text="update: 3min ago"
+            android:visibility="gone"
+            android:textSize="9sp"
+            auto:style="OswaldLight"/>
 
         <com.zhangyangjing.weather.ui.widget.StyleTextView
             android:id="@+id/tv_weather_icon"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/tv_current_temp_metric"
+            android:layout_centerVertical="true"
             android:layout_weight="1.0"
             android:gravity="center_vertical"
             android:text="  \uf004"
             android:textSize="45sp"
             auto:style="WeatherIcons"/>
-    </LinearLayout>
+    </RelativeLayout>
 
 
     <!--<LinearLayout-->
@@ -110,8 +104,7 @@
         android:id="@+id/detail_line1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingLeft="40dp"
-        android:layout_marginTop="8dp">
+        android:paddingLeft="40dp">
 
         <LinearLayout
             android:layout_width="0dp"
@@ -219,8 +212,8 @@
         android:id="@+id/detail_line2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingLeft="40dp"
-        android:layout_marginTop="8dp">
+        android:layout_marginTop="8dp"
+        android:paddingLeft="40dp">
 
         <LinearLayout
             android:layout_width="0dp"

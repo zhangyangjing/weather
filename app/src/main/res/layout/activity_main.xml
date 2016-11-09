@@ -27,8 +27,17 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:fitsSystemWindows="true"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
             android:minHeight="?attr/actionBarSize"
             app:layout_scrollFlags="snap|scroll|exitUntilCollapsed">
+
+            <fragment
+                android:id="@+id/frg_districts"
+                android:name="com.zhangyangjing.weather.ui.fragment.FragmentDistricts"
+                android:layout_width="wrap_content"
+                android:layout_height="?attr/actionBarSize"
+                app:layout_collapseMode="pin"/>
 
             <fragment
                 android:id="@+id/frg_search"
@@ -70,11 +79,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
 
-            <fragment
-                android:id="@+id/frg_tide"
-                android:name="com.zhangyangjing.weather.ui.fragment.BlankFragment"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+            <!--<fragment-->
+                <!--android:id="@+id/frg_tide"-->
+                <!--android:name="com.zhangyangjing.weather.ui.fragment.FragmentDistricts"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"/>-->
 
             <Button
                 android:id="@+id/btn_test_sync"
