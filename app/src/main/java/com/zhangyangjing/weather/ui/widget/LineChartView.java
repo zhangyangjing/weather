@@ -36,6 +36,7 @@ public class LineChartView extends View {
         mLinePaint.setStyle(Paint.Style.STROKE);
 
         mTextPaint = new Paint();
+        mTextPaint.setAntiAlias(true);
         mTextPaint.setTypeface(Typeface.createFromAsset(getContext().getAssets(),
                 "Oswald-Regular.ttf")); // TODO: use util
         mTextPaint.setTextSize(40);
