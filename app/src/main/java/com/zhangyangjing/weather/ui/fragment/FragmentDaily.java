@@ -14,12 +14,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.zhangyangjing.weather.R;
 import com.zhangyangjing.weather.provider.weather.WeatherContract.WeatherDaily;
 import com.zhangyangjing.weather.settings.SettingsUtil;
 import com.zhangyangjing.weather.ui.widget.LineChartView;
+import com.zhangyangjing.weather.ui.widget.StyleTextView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -110,7 +110,7 @@ public class FragmentDaily extends Fragment {
             int nextTemp[] = mCursor.getCount() - 1 == position ? temp : getTemp(position + 1);
             int previousTemp[] = 0 == position ? temp : getTemp(position - 1);
 
-//            holder.mTvInfo.setText("");
+            holder.mVvDottedLine.setVisibility(0 == position ? View.GONE : View.VISIBLE);
             holder.mLcChart.setData(
                     mMaxTemp,
                     mMinTemp,
@@ -151,7 +151,10 @@ public class FragmentDaily extends Fragment {
     }
 
     class MyViewHolder extends RecyclerView.ViewHolder {
-        @BindView(R.id.tv1) TextView mTvInfo;
+        @BindView(R.id.tv_week) StyleTextView mTvWeek;
+        @BindView(R.id.tv_date) StyleTextView mTvDate;
+        @BindView(R.id.tv_icon) StyleTextView mTvIcon;
+        @BindView(R.id.dotted_line) View mVvDottedLine;
         @BindView(R.id.lc_chart) LineChartView mLcChart;
 
         public MyViewHolder(View itemView) {

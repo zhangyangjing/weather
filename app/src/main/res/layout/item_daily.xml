@@ -1,18 +1,51 @@
-<LinearLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="200dp"
-    android:layout_height="300dp"
-    android:orientation="vertical">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="200dp">
 
-    <TextView
-        android:id="@+id/tv1"
-        android:text="ks"
+    <com.zhangyangjing.weather.ui.widget.DottedLineView
+        android:id="@+id/dotted_line"
+        android:layout_width="1dp"
+        android:layout_marginTop="4dp"
+        android:layout_height="match_parent"/>
+
+    <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
-    <com.zhangyangjing.weather.ui.widget.LineChartView
-        android:id="@+id/lc_chart"
-        android:layout_width="100dp"
-        android:layout_weight="1.0"
-        android:layout_height="0dp"/>
-</LinearLayout>
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
+        <com.zhangyangjing.weather.ui.widget.StyleTextView
+            android:id="@+id/tv_week"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:text="FRI"
+            app:style="OswaldRegular"/>
+
+        <com.zhangyangjing.weather.ui.widget.StyleTextView
+            android:id="@+id/tv_date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:text="11.11"
+            app:style="OswaldLight"/>
+
+        <com.zhangyangjing.weather.ui.widget.StyleTextView
+            android:id="@+id/tv_icon"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:layout_marginTop="6dp"
+            android:textSize="25dp"
+            android:text="\uf010"
+            app:style="WeatherIcons"/>
+
+        <com.zhangyangjing.weather.ui.widget.LineChartView
+            android:id="@+id/lc_chart"
+            android:layout_width="60dp"
+            android:layout_height="0dp"
+            android:layout_weight="1.0"
+            app:style="WeatherIcons"/>
+    </LinearLayout>
+</RelativeLayout>

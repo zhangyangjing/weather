@@ -18,7 +18,7 @@ import android.view.View;
 
 public class LineChartView extends View {
     private static final String FORMAT_STRING = "%d°";
-    private static final int STROKE_WIDTH = 6;
+    private static final int STROKE_WIDTH = 3;
 
     private int[] mLowData, mHighData;
     private int mMax, mMin;
@@ -54,8 +54,6 @@ public class LineChartView extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-
-        canvas.drawColor(0xffeeeeee);
 
         mLinePaint.setColor(0xFFFE872F);
         mShadePaint.setShader(new LinearGradient(
