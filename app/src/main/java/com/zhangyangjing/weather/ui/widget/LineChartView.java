@@ -8,10 +8,11 @@ import android.graphics.Path;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.Shader;
-import android.graphics.Typeface;
 import android.util.AttributeSet;
 import android.view.View;
 
+import com.zhangyangjing.weather.util.FontUtil;
+import com.zhangyangjing.weather.util.FontUtil.TypeFaceEnum;
 import com.zhangyangjing.weather.util.Utils;
 
 /**
@@ -46,8 +47,7 @@ public class LineChartView extends View {
 
         mTextPaint = new Paint();
         mTextPaint.setAntiAlias(true);
-        mTextPaint.setTypeface(Typeface.createFromAsset(getContext().getAssets(),
-                "Oswald-Regular.ttf")); // TODO: use util
+        mTextPaint.setTypeface(FontUtil.getTypeface(context, TypeFaceEnum.OswaldRegular));
         mTextPaint.setTextSize(Utils.dp2px(context, TEXT_SIZE));
 
         mShadePaint = new Paint();
