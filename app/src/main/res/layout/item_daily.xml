@@ -7,8 +7,8 @@
     <com.zhangyangjing.weather.ui.widget.DottedLineView
         android:id="@+id/dotted_line"
         android:layout_width="1dp"
-        android:layout_marginTop="4dp"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        android:layout_marginTop="4dp"/>
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -21,6 +21,7 @@
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
             android:text="FRI"
+            android:textColor="@android:color/black"
             app:style="OswaldRegular"/>
 
         <com.zhangyangjing.weather.ui.widget.StyleTextView
@@ -29,16 +30,17 @@
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
             android:text="11.11"
+            android:textColor="@android:color/black"
             app:style="OswaldLight"/>
 
         <com.zhangyangjing.weather.ui.widget.StyleTextView
             android:id="@+id/tv_icon"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
             android:layout_marginTop="6dp"
-            android:textSize="25dp"
+            android:gravity="center_horizontal"
             android:text="\uf010"
+            android:textSize="25dp"
             app:style="WeatherIcons"/>
 
         <com.zhangyangjing.weather.ui.widget.LineChartView

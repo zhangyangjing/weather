@@ -12,16 +12,22 @@ import android.graphics.Typeface;
 import android.util.AttributeSet;
 import android.view.View;
 
+import com.zhangyangjing.weather.util.Utils;
+
 /**
  * Created by zhangyangjing on 10/11/2016.
  */
 
 public class LineChartView extends View {
     private static final String FORMAT_STRING = "%d°";
-    private static final int STROKE_WIDTH = 3;
+    private static final int STROKE_WIDTH = 1;
+    private static final int TEXT_MARGIN = 5;
+    private static final int TEXT_SIZE = 13;
 
     private int[] mLowData, mHighData;
     private int mMax, mMin;
+    private int mStrokeWidth;
+    private int mTextMargin;
 
     Paint mLinePaint;
     Paint mTextPaint;
@@ -30,16 +36,19 @@ public class LineChartView extends View {
     public LineChartView(Context context, AttributeSet attrs) {
         super(context, attrs);
 
+        mStrokeWidth = Utils.dp2px(context, STROKE_WIDTH);
+        mTextMargin = Utils.dp2px(context, TEXT_MARGIN);
+
         mLinePaint = new Paint();
         mLinePaint.setAntiAlias(true);
-        mLinePaint.setStrokeWidth(STROKE_WIDTH);
+        mLinePaint.setStrokeWidth(mStrokeWidth);
         mLinePaint.setStyle(Paint.Style.STROKE);
 
         mTextPaint = new Paint();
         mTextPaint.setAntiAlias(true);
         mTextPaint.setTypeface(Typeface.createFromAsset(getContext().getAssets(),
                 "Oswald-Regular.ttf")); // TODO: use util
-        mTextPaint.setTextSize(40);
+        mTextPaint.setTextSize(Utils.dp2px(context, TEXT_SIZE));
 
         mShadePaint = new Paint();
     }
@@ -77,8 +86,8 @@ public class LineChartView extends View {
         int textWidth = rect.right - rect.left;
         int textHeight = rect.bottom - rect.top;
 
-        int rangeTop = textHeight + STROKE_WIDTH * 2;
-        int rangeBottom = getHeight() - textHeight - STROKE_WIDTH * 2;
+        int rangeTop = textHeight + mStrokeWidth + mTextMargin;
+        int rangeBottom = getHeight() - textHeight - mStrokeWidth - mTextMargin;
 
         int verticalRange = rangeBottom - rangeTop;
         float rate = verticalRange / (mMax - mMin);
@@ -99,11 +108,11 @@ public class LineChartView extends View {
 
         canvas.drawPath(shadePath, mShadePaint);
         canvas.drawPath(path, mLinePaint);
-        canvas.drawCircle(current.x, current.y, STROKE_WIDTH, mLinePaint);
+        canvas.drawCircle(current.x, current.y, mStrokeWidth, mLinePaint);
 
         int textY = textUpward ?
-                current.y - STROKE_WIDTH * 2 :
-                current.y + STROKE_WIDTH * 2 + textHeight;
+                current.y - mStrokeWidth - mTextMargin :
+                current.y + mStrokeWidth + mTextMargin + textHeight;
         canvas.drawText(info, current.x - textWidth / 2, textY, mTextPaint);
     }
 }

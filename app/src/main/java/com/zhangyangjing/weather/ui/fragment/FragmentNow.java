@@ -30,6 +30,7 @@ import android.widget.TextView;
 import com.zhangyangjing.weather.R;
 import com.zhangyangjing.weather.provider.weather.WeatherContract;
 import com.zhangyangjing.weather.settings.SettingsUtil;
+import com.zhangyangjing.weather.util.Utils;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -91,9 +92,9 @@ public class FragmentNow extends Fragment implements LoaderManager.LoaderCallbac
         super.onCreate(savedInstanceState);
         mActionBarHeight = getActionBarHeight();
         mStatusBarHeight = getStatusBarHeight();
-        mTargetCurrentTempTextSize = dp2px(TARGET_CURRENT_TEMP_TEXT_SIZE);
-        mTargetWeatherIconTextSize = dp2px(TARGET_WEATHER_ICON_TEXT_SIZE);
-        mTargetWeatherInfoMarginTop = dp2px(TARGET_WEATHER_INFO_MARGIN_TOP);
+        mTargetCurrentTempTextSize = Utils.dp2px(getContext(), TARGET_CURRENT_TEMP_TEXT_SIZE);
+        mTargetWeatherIconTextSize = Utils.dp2px(getContext(), TARGET_WEATHER_ICON_TEXT_SIZE);
+        mTargetWeatherInfoMarginTop = Utils.dp2px(getContext(), TARGET_WEATHER_INFO_MARGIN_TOP);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT_WATCH)
@@ -310,13 +311,6 @@ public class FragmentNow extends Fragment implements LoaderManager.LoaderCallbac
                     getResources().getDisplayMetrics());
         }
         return result;
-    }
-
-    private float dp2px(int dpValue) {
-        return TypedValue.applyDimension(
-                TypedValue.COMPLEX_UNIT_DIP,
-                dpValue,
-                getResources().getDisplayMetrics());
     }
 
     public static class Behavior<V extends View> extends CoordinatorLayout.Behavior<V> {
