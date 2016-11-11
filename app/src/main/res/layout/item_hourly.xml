@@ -1,0 +1,60 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:gravity="center_horizontal"
+    android:orientation="vertical">
+
+    <com.zhangyangjing.weather.ui.widget.StyleTextView
+        android:id="@+id/tv_time"
+        android:layout_width="76dp"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:text="05:00"
+        android:textColor="#666666"
+        android:textSize="12sp"
+        app:style="OswaldRegular"/>
+
+    <com.zhangyangjing.weather.ui.widget.StyleTextView
+        android:id="@+id/tv_icon"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="3dp"
+        android:gravity="center_horizontal"
+        android:text="\uf012"
+        android:textSize="20dp"
+        app:style="WeatherIcons"/>
+
+    <com.zhangyangjing.weather.ui.widget.StyleTextView
+        android:id="@+id/tv_temp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:gravity="center_horizontal"
+        android:text="6°"
+        android:textColor="@android:color/black"
+        android:textSize="20sp"
+        app:style="OswaldRegular"/>
+
+    <com.zhangyangjing.weather.ui.widget.StyleTextView
+        android:id="@+id/tv_wind_dir"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:gravity="center_horizontal"
+        android:text="SW"
+        android:textColor="@android:color/darker_gray"
+        android:textSize="12sp"
+        app:style="OswaldRegular"/>
+
+    <com.zhangyangjing.weather.ui.widget.StyleTextView
+        android:id="@+id/tv_wind_spd"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:text="2.8m/s"
+        android:textColor="@android:color/darker_gray"
+        android:textSize="12sp"
+        app:style="OswaldRegular"/>
+</LinearLayout>

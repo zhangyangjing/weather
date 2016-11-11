@@ -4,5 +4,7 @@
     <color name="colorPrimaryDark">#388E3C</color>
     <color name="colorAccent">#7C4DFF</color>
 
+    <color name="dotted_line">#EEEEEE</color>
+
     <color name="black_overlay">#66000000</color>
 </resources>

@@ -7,10 +7,9 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.os.Build;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 
-import static android.content.ContentValues.TAG;
+import com.zhangyangjing.weather.R;
 
 /**
  * Created by zhangyangjing on 10/11/2016.
@@ -23,14 +22,12 @@ public class DottedLineView extends View {
     public DottedLineView(Context context, AttributeSet attrs) {
         super(context, attrs);
 
-        Log.d(TAG, "DottedLineView() called with: context = [" + context + "], attrs = [" + attrs + "]");
-
         mPaint = new Paint();
         mPaint.setStyle(Paint.Style.STROKE);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
-            mPaint.setColor(getResources().getColor(android.R.color.darker_gray, null));
+            mPaint.setColor(getResources().getColor(R.color.dotted_line, null));
         else
-            mPaint.setColor(getResources().getColor(android.R.color.darker_gray));
+            mPaint.setColor(getResources().getColor(R.color.dotted_line));
         mPaint.setStrokeWidth(20);
 
         mPath = new Path();
@@ -40,7 +37,6 @@ public class DottedLineView extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        Log.d(TAG, "onDraw() called with: canvas = [" + canvas + "]");
         mPath.reset();
         mPath.moveTo(2, 0);
         mPath.lineTo(2, getHeight());
