@@ -64,6 +64,9 @@ public class LineChartView extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
+        if (null == mLowData || null == mHighData)
+            return;
+
         mLinePaint.setColor(0xFFFE872F);
         mShadePaint.setShader(new LinearGradient(
                 0, 0, 0, getHeight(),
