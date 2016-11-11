@@ -199,6 +199,7 @@ public class WeatherProvider extends ContentProvider {
                 data.now.pres,
                 data.now.vis,
                 translateUv(data.suggestion.uv.brf),
+                data.now.cond.code,
                 data.now.wind.spd,
                 data.now.wind.sc,
                 translateWindDirect(data.now.wind.dir),

@@ -18,7 +18,6 @@ import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.style.RelativeSizeSpan;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,8 +28,11 @@ import android.widget.TextView;
 
 import com.zhangyangjing.weather.R;
 import com.zhangyangjing.weather.provider.weather.WeatherContract;
+import com.zhangyangjing.weather.provider.weather.WeatherContract.WeatherNow;
 import com.zhangyangjing.weather.settings.SettingsUtil;
+import com.zhangyangjing.weather.util.CursorUtil;
 import com.zhangyangjing.weather.util.Utils;
+import com.zhangyangjing.weather.util.WeatherUtil;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -166,16 +168,17 @@ public class FragmentNow extends Fragment implements LoaderManager.LoaderCallbac
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
         cursor.moveToFirst();
-        int humidity = cursor.getInt(cursor.getColumnIndex(WeatherContract.WeatherNow.HUM));
-        int windSpeed = cursor.getInt(cursor.getColumnIndex(WeatherContract.WeatherNow.WSPD));
-        String windDir = cursor.getString(cursor.getColumnIndex(WeatherContract.WeatherNow.WDIR));
-        int temp = cursor.getInt(cursor.getColumnIndex(WeatherContract.WeatherNow.TMP));
-        int feelLike = cursor.getInt(cursor.getColumnIndex(WeatherContract.WeatherNow.FL));
-        int pm25 = cursor.getInt(cursor.getColumnIndex(WeatherContract.WeatherNow.PM25));
-        int pm10 = cursor.getInt(cursor.getColumnIndex(WeatherContract.WeatherNow.PM10));
-        int aqi = cursor.getInt(cursor.getColumnIndex(WeatherContract.WeatherNow.AQI));
-        int visibility = cursor.getInt(cursor.getColumnIndex(WeatherContract.WeatherNow.VIS));
-        String uv = cursor.getString(cursor.getColumnIndex(WeatherContract.WeatherNow.UV));
+        int humidity = CursorUtil.getInt(cursor, WeatherNow.HUM);
+        int windSpeed = CursorUtil.getInt(cursor, WeatherNow.WSPD);
+        String windDir = CursorUtil.getString(cursor, WeatherNow.WDIR);
+        int temp = CursorUtil.getInt(cursor, WeatherNow.TMP);
+        int feelLike = CursorUtil.getInt(cursor, WeatherNow.FL);
+        int pm25 = CursorUtil.getInt(cursor, WeatherNow.PM25);
+        int pm10 = CursorUtil.getInt(cursor, WeatherNow.PM10);
+        int aqi =  CursorUtil.getInt(cursor, WeatherNow.AQI);
+        int visibility = CursorUtil.getInt(cursor, WeatherNow.VIS);
+        int cond = CursorUtil.getInt(cursor, WeatherNow.COND);
+        String uv = CursorUtil.getString(cursor, WeatherNow.UV);
 
         mTvWind.setText(generateWindInfo(windDir, windSpeed));
         mTvHumidity.setText(generateSpannableString(humidity, "%"));
@@ -186,6 +189,7 @@ public class FragmentNow extends Fragment implements LoaderManager.LoaderCallbac
         mTvPm25.setText(pm25 + "");
         mTvAqi.setText(aqi + "");
         mTvUv.setText(uv);
+        mTvWeatherIcon.setText(WeatherUtil.cond2icon(cond));
     }
 
     @Override
@@ -194,7 +198,6 @@ public class FragmentNow extends Fragment implements LoaderManager.LoaderCallbac
     }
 
     public void setDistrictRect(int left, int top, int right, int bottom) {
-        Log.d(TAG, "setDistrictRect() called with: left = [" + left + "], top = [" + top + "], right = [" + right + "], bottom = [" + bottom + "]");
         mDistrictRight = right;
         if (0 != mTargetWeatherX)
             mTargetWeatherInfoTranslationX = right - mTargetWeatherX;
