@@ -1,6 +1,5 @@
 package com.zhangyangjing.weather.ui.fragment;
 
-import android.database.Cursor;
 import android.database.MatrixCursor;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -14,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.zhangyangjing.weather.R;
+import com.zhangyangjing.weather.ui.adapter.AdapterHourly;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -29,13 +29,13 @@ public class FragmentHourly extends Fragment {
 
     @BindView(R.id.rv_hourly) RecyclerView mRvHourly;
 
-    private MyAdapter mAdapter;
+    private AdapterHourly mAdapter;
     private MyLoaderCallback mLoaderCallback;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mAdapter = new MyAdapter();
+        mAdapter = new AdapterHourly(this);
         mLoaderCallback = new MyLoaderCallback();
     }
 
@@ -83,39 +83,6 @@ public class FragmentHourly extends Fragment {
         @Override
         public void onLoaderReset(Loader loader) {
             mAdapter.swapCursor(null);
-        }
-    }
-
-    class MyAdapter extends RecyclerView.Adapter<MyViewHolder> {
-        private Cursor mCursor;
-
-        @Override
-        public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View view =  View.inflate(parent.getContext(), R.layout.item_hourly, null);
-            return new MyViewHolder(view);
-        }
-
-        @Override
-        public void onBindViewHolder(MyViewHolder holder, int position) {
-
-        }
-
-        @Override
-        public int getItemCount() {
-            return null == mCursor ? 0 : mCursor.getCount();
-        }
-
-        public void swapCursor(Cursor cursor) {
-            mCursor = cursor;
-            notifyDataSetChanged();
-        }
-    }
-
-    class MyViewHolder extends RecyclerView.ViewHolder {
-
-        public MyViewHolder(View itemView) {
-            super(itemView);
-            ButterKnife.bind(this, itemView);
         }
     }
 }

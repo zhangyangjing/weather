@@ -15,8 +15,8 @@ import butterknife.ButterKnife;
 /**
  * Created by zhangyangjing on 04/11/2016.
  */
-public class QuerySuggestAdapter extends CursorAdapter {
-    public QuerySuggestAdapter(Context context) {
+public class AdapterQuerySuggest extends CursorAdapter {
+    public AdapterQuerySuggest(Context context) {
         super(context, null, false);
     }
 

@@ -18,8 +18,7 @@ import android.view.ViewGroup;
 import com.zhangyangjing.weather.R;
 import com.zhangyangjing.weather.provider.weather.WeatherContract.WeatherDaily;
 import com.zhangyangjing.weather.settings.SettingsUtil;
-import com.zhangyangjing.weather.ui.widget.LineChartView;
-import com.zhangyangjing.weather.ui.widget.StyleTextView;
+import com.zhangyangjing.weather.ui.adapter.AdapterDaily;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -33,7 +32,7 @@ public class FragmentDaily extends Fragment {
 
     private static final int LOADER_ID = 0;
 
-    private MyAdapter mAdapter;
+    private AdapterDaily mAdapter;
     private MyLoaderCallback mLoaderCallback;
 
     @BindView(R.id.rv_daily) RecyclerView mRvDaily;
@@ -41,7 +40,7 @@ public class FragmentDaily extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mAdapter = new MyAdapter();
+        mAdapter = new AdapterDaily();
         mLoaderCallback = new MyLoaderCallback();
     }
 
@@ -90,76 +89,6 @@ public class FragmentDaily extends Fragment {
         @Override
         public void onLoaderReset(Loader loader) {
             mAdapter.swapCursor(null);
-        }
-    }
-
-    private class MyAdapter extends RecyclerView.Adapter<MyViewHolder> {
-        private Cursor mCursor;
-        private int mMaxTemp;
-        private int mMinTemp;
-
-        @Override
-        public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View view = View.inflate(parent.getContext(), R.layout.item_daily, null);
-            return new MyViewHolder(view);
-        }
-
-        @Override
-        public void onBindViewHolder(MyViewHolder holder, int position) {
-            int temp[] = getTemp(position);
-            int nextTemp[] = mCursor.getCount() - 1 == position ? temp : getTemp(position + 1);
-            int previousTemp[] = 0 == position ? temp : getTemp(position - 1);
-
-            holder.mVvDottedLine.setVisibility(0 == position ? View.GONE : View.VISIBLE);
-            holder.mLcChart.setData(
-                    mMaxTemp,
-                    mMinTemp,
-                    new int[] {previousTemp[0], temp[0], nextTemp[0]},
-                    new int[] {previousTemp[1], temp[1], nextTemp[1]});
-        }
-
-        @Override
-        public int getItemCount() {
-            return null == mCursor ? 0 : mCursor.getCount();
-        }
-
-        public void swapCursor(Cursor cursor) {
-            mCursor = cursor;
-            updateLimit();
-            notifyDataSetChanged();
-        }
-
-        private int[] getTemp(int index) {
-            mCursor.moveToPosition(index);
-            return new int[] {
-                    mCursor.getInt(mCursor.getColumnIndex("low")),
-                    mCursor.getInt(mCursor.getColumnIndex("high"))};
-        }
-
-        private void updateLimit() {
-            mMinTemp = Integer.MAX_VALUE;
-            mMaxTemp = Integer.MIN_VALUE;
-
-            for (int i = 0; i < mCursor.getCount(); i++) {
-                int[] temp = getTemp(i);
-                if (temp[0] < mMinTemp)
-                    mMinTemp = temp[0];
-                if (temp[1] > mMaxTemp)
-                    mMaxTemp = temp[1];
-            }
-        }
-    }
-
-    class MyViewHolder extends RecyclerView.ViewHolder {
-        @BindView(R.id.tv_week) StyleTextView mTvWeek;
-        @BindView(R.id.tv_date) StyleTextView mTvDate;
-        @BindView(R.id.tv_icon) StyleTextView mTvIcon;
-        @BindView(R.id.dotted_line) View mVvDottedLine;
-        @BindView(R.id.lc_chart) LineChartView mLcChart;
-
-        public MyViewHolder(View itemView) {
-            super(itemView);
-            ButterKnife.bind(this, itemView);
         }
     }
 }

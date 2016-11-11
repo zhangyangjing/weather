@@ -26,7 +26,7 @@ import android.widget.ImageButton;
 
 import com.zhangyangjing.weather.R;
 import com.zhangyangjing.weather.provider.weather.WeatherContract;
-import com.zhangyangjing.weather.ui.adapter.QuerySuggestAdapter;
+import com.zhangyangjing.weather.ui.adapter.AdapterQuerySuggest;
 import com.zhangyangjing.weather.util.AnimUtils;
 import com.zhangyangjing.weather.util.ImeUtils;
 
@@ -84,7 +84,7 @@ public class FragmentSearch extends Fragment {
                 mSearchView.findViewById(autoCompleteTextViewID);
         searchAutoComplete.setThreshold(1);
 
-        mSearchView.setSuggestionsAdapter(new QuerySuggestAdapter(getContext()));
+        mSearchView.setSuggestionsAdapter(new AdapterQuerySuggest(getContext()));
         mSearchView.setOnQueryTextListener(new MyQueryTextListener());
 
         mSearchStatus = SearchStatus.NORMAL;
