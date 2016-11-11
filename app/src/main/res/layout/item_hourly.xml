@@ -16,15 +16,15 @@
         android:textSize="12sp"
         app:style="OswaldRegular"/>
 
-    <com.zhangyangjing.weather.ui.widget.StyleTextView
-        android:id="@+id/tv_icon"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="3dp"
-        android:gravity="center_horizontal"
-        android:text="\uf012"
-        android:textSize="20dp"
-        app:style="WeatherIcons"/>
+    <!--<com.zhangyangjing.weather.ui.widget.StyleTextView-->
+        <!--android:id="@+id/tv_icon"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_marginTop="3dp"-->
+        <!--android:gravity="center_horizontal"-->
+        <!--android:text="\uf012"-->
+        <!--android:textSize="20dp"-->
+        <!--app:style="WeatherIcons"/>-->
 
     <com.zhangyangjing.weather.ui.widget.StyleTextView
         android:id="@+id/tv_temp"

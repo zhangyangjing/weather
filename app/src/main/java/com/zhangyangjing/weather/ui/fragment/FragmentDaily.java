@@ -1,7 +1,6 @@
 package com.zhangyangjing.weather.ui.fragment;
 
 import android.database.Cursor;
-import android.database.MatrixCursor;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -10,7 +9,6 @@ import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,6 +28,7 @@ import butterknife.ButterKnife;
 public class FragmentDaily extends Fragment {
     private static final String TAG = FragmentDaily.class.getSimpleName();
 
+    private static final String LOADER_PARAM_CITY = "city";
     private static final int LOADER_ID = 0;
 
     private AdapterDaily mAdapter;
@@ -48,7 +47,6 @@ public class FragmentDaily extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_daily, container, false);
-        Log.d(TAG, "onCreateView() called with: inflater = [" + inflater + "], container = [" + container + "], savedInstanceState = [" + savedInstanceState + "]");
         ButterKnife.bind(this, view);
         return view;
     }
@@ -56,28 +54,23 @@ public class FragmentDaily extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-//        getLoaderManager().initLoader(LOADER_ID, null, mLoaderCallback);
-        MatrixCursor cursor = new MatrixCursor(new String[]{"low", "high"});
-        cursor.addRow(new Integer[]{0, 3});
-        cursor.addRow(new Integer[]{3, 6});
-        cursor.addRow(new Integer[]{4, 6});
-        cursor.addRow(new Integer[]{6, 9});
-        cursor.addRow(new Integer[]{5, 9});
-        cursor.addRow(new Integer[]{2, 4});
-        cursor.addRow(new Integer[]{4, 7});
-        cursor.addRow(new Integer[]{9, 12});
-        mRvDaily.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
+        mRvDaily.setLayoutManager(
+                new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
         mRvDaily.setAdapter(mAdapter);
-        mAdapter.swapCursor(cursor);
+
+        Bundle bundle = new Bundle();
+        bundle.putString(LOADER_PARAM_CITY, SettingsUtil.getCurrentCity(getContext()));
+        getLoaderManager().initLoader(LOADER_ID, bundle, mLoaderCallback);
     }
 
     private class MyLoaderCallback implements LoaderManager.LoaderCallbacks {
 
         @Override
         public Loader onCreateLoader(int id, Bundle args) {
+            String city = args.getString(LOADER_PARAM_CITY);
             return new CursorLoader(
                     getContext(),
-                    WeatherDaily.buildObserveUri(SettingsUtil.getCurrentCity(getContext())),
+                    WeatherDaily.buildQueryUri(city),
                     null, null, null, null);
         }
 

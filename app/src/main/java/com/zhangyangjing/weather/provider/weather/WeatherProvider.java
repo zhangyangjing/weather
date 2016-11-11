@@ -15,7 +15,9 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.google.gson.Gson;
+import com.zhangyangjing.weather.sync.heweather.model.DailyForecast;
 import com.zhangyangjing.weather.sync.heweather.model.HeWeatherData;
+import com.zhangyangjing.weather.sync.heweather.model.HourlyForecast;
 
 import java.util.ArrayList;
 import java.util.Set;
@@ -66,10 +68,20 @@ public class WeatherProvider extends ContentProvider {
                         WeatherContract.WeatherNow.buildObserveUri(city));
                 return cursor;
             }
-            case WEATHER_HOURLY:
-                return null;
-            case WEATHER_DAILY:
-                return null;
+            case WEATHER_HOURLY: {
+                String city = WeatherContract.WeatherHourly.getCityId(uri);
+                Cursor cursor = doQueryWeatherHourly(city);
+                cursor.setNotificationUri(getContext().getContentResolver(),
+                        WeatherContract.WeatherHourly.buildObserveUri(city));
+                return cursor;
+            }
+            case WEATHER_DAILY: {
+                String city = WeatherContract.WeatherDaily.getCityId(uri);
+                Cursor cursor = doQueryWeatherDaily(city);
+                cursor.setNotificationUri(getContext().getContentResolver(),
+                        WeatherContract.WeatherDaily.buildObserveUri(city));
+                return cursor;
+            }
             default:
                 return null;
         }
@@ -196,17 +208,46 @@ public class WeatherProvider extends ContentProvider {
     }
 
     private Cursor doQueryWeatherHourly(String city) {
+        MatrixCursor cursor = new MatrixCursor(WeatherContract.WeatherHourly.getColumns());
         HeWeatherData data = getWeatherData(city);
         if (null == data)
-            return new MatrixCursor(new String[]{WeatherContract.WeatherHourly._ID});
-        return null;
+            return cursor;
+
+        for (HourlyForecast forecast : data.hourlyForecast) {
+            cursor.addRow(new String[]{
+                    city,
+                    forecast.date,
+                    forecast.tmp,
+                    forecast.wind.spd,
+                    forecast.wind.sc,
+                    translateWindDirect(forecast.wind.dir),
+                    forecast.wind.deg});
+        }
+
+        return cursor;
     }
 
     private Cursor doQueryWeatherDaily(String city) {
+        MatrixCursor cursor = new MatrixCursor(WeatherContract.WeatherDaily.getColumns());
         HeWeatherData data = getWeatherData(city);
         if (null == data)
-            return new MatrixCursor(new String[]{WeatherContract.WeatherDaily._ID});
-        return null;
+            return cursor;
+
+        for (DailyForecast forecast : data.dailyForecast) {
+            cursor.addRow(new String[]{
+                    city,
+                    forecast.date,
+                    forecast.tmp.max,
+                    forecast.tmp.min,
+                    forecast.cond.codeD,
+                    forecast.cond.codeN,
+                    forecast.wind.spd,
+                    forecast.wind.sc,
+                    translateWindDirect(forecast.wind.dir),
+                    forecast.wind.deg});
+        }
+
+        return cursor;
     }
 
     private HeWeatherData getWeatherData(String city) {
@@ -228,49 +269,49 @@ public class WeatherProvider extends ContentProvider {
     }
 
     private String translateUv(String uvStr) {
-        String uv = WeatherContract.WeatherNow.UV_MED;
+        String uv = WeatherContract.Uv.Hig.toString();
         switch (uvStr) {
             case "强":
             case "最强":
-                uv = WeatherContract.WeatherNow.UV_HIG;
+                uv = WeatherContract.Uv.Hig.toString();
                 break;
             case "中":
-                uv = WeatherContract.WeatherNow.UV_MED;
+                uv = WeatherContract.Uv.Med.toString();
                 break;
             case "弱":
             case "最弱":
-                uv = WeatherContract.WeatherNow.UV_LOW;
+                uv = WeatherContract.Uv.Low.toString();
                 break;
         }
         return uv;
     }
 
     private String translateWindDirect(String windDir) {
-        String wd = WeatherContract.WeatherNow.WD_E;
+        String wd = WeatherContract.WindDirect.E.toString();
         switch (windDir) {
             case "北风":
-                wd = WeatherContract.WeatherNow.WD_N;
+                wd = WeatherContract.WindDirect.N.toString();
                 break;
             case "东北风":
-                wd = WeatherContract.WeatherNow.WD_NE;
+                wd = WeatherContract.WindDirect.NE.toString();
                 break;
             case "东风":
-                wd = WeatherContract.WeatherNow.WD_E;
+                wd = WeatherContract.WindDirect.E.toString();
                 break;
             case "东南风":
-                wd = WeatherContract.WeatherNow.WD_SE;
+                wd = WeatherContract.WindDirect.SE.toString();
                 break;
             case "南风":
-                wd = WeatherContract.WeatherNow.WD_S;
+                wd = WeatherContract.WindDirect.S.toString();
                 break;
             case "西南风":
-                wd = WeatherContract.WeatherNow.WD_SW;
+                wd = WeatherContract.WindDirect.SW.toString();
                 break;
             case "西风":
-                wd = WeatherContract.WeatherNow.WD_W;
+                wd = WeatherContract.WindDirect.W.toString();
                 break;
             case "西北风":
-                wd = WeatherContract.WeatherNow.WD_NW;
+                wd = WeatherContract.WindDirect.NW.toString();
                 break;
         }
         return wd;

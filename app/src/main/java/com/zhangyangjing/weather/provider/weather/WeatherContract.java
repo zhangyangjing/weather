@@ -68,9 +68,24 @@ public class WeatherContract {
     }
 
     interface WeatherDailyColumns extends BaseColumns {
+        String DATE = "date"; // 日期
+        String TMPH = "tmph"; // 最高温度
+        String TMPL = "tmpl"; // 最低温度
+        String CONDD = "cond_d"; // 日间天气
+        String CONDN = "cond_n"; // 晚间天气
+        String WSPD = "wind_spd"; // 风速(Kmph)
+        String WSCD = "wind_scd"; // 风力等级
+        String WDIR = "wind_dir"; // 风向(方向)
+        String WDEG = "wind_deg"; // 风向(角度)
     }
 
     interface WeatherHourlyColumns extends BaseColumns {
+        String DATE = "date"; // 日期
+        String TMP = "tmp"; // 当前温度(摄氏度)
+        String WSPD = "wind_spd"; // 风速(Kmph)
+        String WSCD = "wind_scd"; // 风力等级
+        String WDIR = "wind_dir"; // 风向(方向)
+        String WDEG = "wind_deg"; // 风向(角度)
     }
 
     public static class City implements CityColumns {
@@ -117,19 +132,6 @@ public class WeatherContract {
     public static class WeatherNow extends WeatherQueryBase implements WeatherNowColumns {
         public static final String CONTENT_TYPE_ID = "weather_now";
 
-        public static final String UV_LOW = "Low";
-        public static final String UV_MED = "Med";
-        public static final String UV_HIG = "Hig";
-
-        public static final String WD_N = "N";
-        public static final String WD_NE = "NE";
-        public static final String WD_E = "E";
-        public static final String WD_SE = "SE";
-        public static final String WD_S = "S";
-        public static final String WD_SW = "SW";
-        public static final String WD_W = "W";
-        public static final String WD_NW = "NW";
-
         public static Uri buildQueryUri(String city) {
             return City.CONTENT_URI.buildUpon()
                     .appendEncodedPath(city)
@@ -163,9 +165,58 @@ public class WeatherContract {
 
     public static class WeatherDaily extends WeatherQueryBase implements WeatherDailyColumns {
         public static final String CONTENT_TYPE_ID = "weather_daily";
+
+        public static Uri buildQueryUri(String city) {
+            return City.CONTENT_URI.buildUpon()
+                    .appendEncodedPath(city)
+                    .appendEncodedPath(Weather.PATH)
+                    .appendPath("daily")
+                    .build();
+        }
+
+        public static String[] getColumns() {
+            return new String[]{
+                    _ID,
+                    DATE,
+                    TMPH,
+                    TMPL,
+                    CONDD,
+                    CONDN,
+                    WSPD,
+                    WSCD,
+                    WDIR,
+                    WDEG};
+        }
     }
 
     public static class WeatherHourly extends WeatherQueryBase implements WeatherHourlyColumns {
         public static final String CONTENT_TYPE_ID = "city";
+
+        public static Uri buildQueryUri(String city) {
+            return City.CONTENT_URI.buildUpon()
+                    .appendEncodedPath(city)
+                    .appendEncodedPath(Weather.PATH)
+                    .appendPath("hourly")
+                    .build();
+        }
+
+        public static String[] getColumns() {
+            return new String[]{
+                    _ID,
+                    DATE,
+                    TMP,
+                    WSPD,
+                    WSCD,
+                    WDIR,
+                    WDEG};
+        }
+    }
+
+    public enum Uv {
+        Low, Med, Hig;
+    }
+
+    public enum WindDirect {
+        N, NE, E, SE, S, SW, W, NW;
     }
 }

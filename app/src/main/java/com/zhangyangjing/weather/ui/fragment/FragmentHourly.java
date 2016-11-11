@@ -1,10 +1,11 @@
 package com.zhangyangjing.weather.ui.fragment;
 
-import android.database.MatrixCursor;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -13,6 +14,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.zhangyangjing.weather.R;
+import com.zhangyangjing.weather.provider.weather.WeatherContract.WeatherHourly;
+import com.zhangyangjing.weather.settings.SettingsUtil;
 import com.zhangyangjing.weather.ui.adapter.AdapterHourly;
 
 import butterknife.BindView;
@@ -25,7 +28,8 @@ import butterknife.ButterKnife;
 public class FragmentHourly extends Fragment {
     private static final String TAG = FragmentHourly.class.getSimpleName();
 
-    private static final int OADER_ID = 0;
+    private static final String LOADER_PARAM_CITY = "city";
+    private static final int LOADER_ID = 0;
 
     @BindView(R.id.rv_hourly) RecyclerView mRvHourly;
 
@@ -54,30 +58,26 @@ public class FragmentHourly extends Fragment {
         mRvHourly.setLayoutManager(
                 new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
         mRvHourly.setAdapter(mAdapter);
-//        getLoaderManager().initLoader(LOADER_ID, null, mLoaderCallback);
 
-        MatrixCursor cursor = new MatrixCursor(new String[]{"temp", "wind"}); // TODO: JUST FOR TEST
-        cursor.addRow(new Integer[]{0, 3});
-        cursor.addRow(new Integer[]{3, 6});
-        cursor.addRow(new Integer[]{4, 6});
-        cursor.addRow(new Integer[]{6, 9});
-        cursor.addRow(new Integer[]{5, 9});
-        cursor.addRow(new Integer[]{2, 4});
-        cursor.addRow(new Integer[]{4, 7});
-        cursor.addRow(new Integer[]{9, 12});
-        mAdapter.swapCursor(cursor);
+        Bundle bundle = new Bundle();
+        bundle.putString(LOADER_PARAM_CITY, SettingsUtil.getCurrentCity(getContext()));
+        getLoaderManager().initLoader(LOADER_ID, bundle, mLoaderCallback);
     }
 
     class MyLoaderCallback implements LoaderManager.LoaderCallbacks {
 
         @Override
         public Loader onCreateLoader(int id, Bundle args) {
-            return null;
+            String city = args.getString(LOADER_PARAM_CITY);
+            return new CursorLoader(
+                    getContext(),
+                    WeatherHourly.buildQueryUri(city),
+                    null, null, null, null);
         }
 
         @Override
         public void onLoadFinished(Loader loader, Object data) {
-
+            mAdapter.swapCursor((Cursor) data);
         }
 
         @Override
