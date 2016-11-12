@@ -1,5 +1,9 @@
 package com.zhangyangjing.weather.util;
 
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.style.RelativeSizeSpan;
 import android.util.SparseArray;
 
 /**
@@ -71,5 +75,15 @@ public class WeatherUtil {
     public static String cond2icon(int condCode) {
         String icon = WEATHER_ICONS.get(condCode);
         return null == icon ? WEATHER_ICONS_UNKNOW : icon;
+    }
+
+    public static Spannable spannableMetricString(int value, String metric) {
+        Spannable span = new SpannableString(value + metric);
+        span.setSpan(
+                new RelativeSizeSpan(0.5f),
+                span.length() - metric.length(),
+                span.length(),
+                Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+        return span;
     }
 }

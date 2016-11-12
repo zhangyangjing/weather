@@ -2,11 +2,6 @@ package com.zhangyangjing.weather.ui.adapter;
 
 import android.database.Cursor;
 import android.support.v7.widget.RecyclerView;
-import android.text.Spannable;
-import android.text.SpannableString;
-import android.text.SpannableStringBuilder;
-import android.text.Spanned;
-import android.text.style.RelativeSizeSpan;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -15,6 +10,7 @@ import com.zhangyangjing.weather.provider.weather.WeatherContract;
 import com.zhangyangjing.weather.ui.fragment.FragmentHourly;
 import com.zhangyangjing.weather.ui.widget.StyleTextView;
 import com.zhangyangjing.weather.util.CursorUtil;
+import com.zhangyangjing.weather.util.WeatherUtil;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -48,7 +44,7 @@ public class AdapterHourly extends RecyclerView.Adapter<AdapterHourly.MyViewHold
         holder.tvTime.setText(date.split(" ")[1]);
         holder.tvTemp.setText(temp + "°");
         holder.tvWindDir.setText(wdir);
-        holder.tvWindSpd.setText(generateSpannableString(wspd, "m/s"));
+        holder.tvWindSpd.setText(WeatherUtil.spannableMetricString(wspd, "m/s"));
     }
 
     @Override
@@ -59,20 +55,6 @@ public class AdapterHourly extends RecyclerView.Adapter<AdapterHourly.MyViewHold
     public void swapCursor(Cursor cursor) {
         mCursor = cursor;
         notifyDataSetChanged();
-    }
-
-    private Spannable generateWindInfo(String direct, int speed) {
-        return new SpannableStringBuilder(direct).append(generateSpannableString(speed, "m/s"));
-    }
-
-    private Spannable generateSpannableString(int value, String SizeStr) {
-        Spannable span = new SpannableString(value + SizeStr);
-        span.setSpan(
-                new RelativeSizeSpan(0.5f),
-                span.length() - SizeStr.length(),
-                span.length(),
-                Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
-        return span;
     }
 
     static class MyViewHolder extends RecyclerView.ViewHolder {

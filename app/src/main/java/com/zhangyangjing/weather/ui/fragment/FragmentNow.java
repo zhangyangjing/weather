@@ -14,10 +14,7 @@ import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.view.animation.FastOutSlowInInterpolator;
 import android.text.Spannable;
-import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
-import android.text.Spanned;
-import android.text.style.RelativeSizeSpan;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -180,9 +177,10 @@ public class FragmentNow extends Fragment implements LoaderManager.LoaderCallbac
         int cond = CursorUtil.getInt(cursor, WeatherNow.COND);
         String uv = CursorUtil.getString(cursor, WeatherNow.UV);
 
-        mTvWind.setText(generateWindInfo(windDir, windSpeed));
-        mTvHumidity.setText(generateSpannableString(humidity, "%"));
-        mTvVisibility.setText(generateSpannableString(visibility, "KM"));
+        Spannable wind = WeatherUtil.spannableMetricString(windSpeed, "m/s");
+        mTvWind.setText(new SpannableStringBuilder(windDir).append(wind));
+        mTvHumidity.setText(WeatherUtil.spannableMetricString(humidity, "%"));
+        mTvVisibility.setText(WeatherUtil.spannableMetricString(visibility, "KM"));
         mTvCurrentTemp.setText(temp + "");
         mTvFellLike.setText(feelLike + "°");
         mTvPm10.setText(pm10 + "");
@@ -260,20 +258,6 @@ public class FragmentNow extends Fragment implements LoaderManager.LoaderCallbac
             line.setScaleY(scale);
             line.setScaleX(scale);
         }
-    }
-
-    private Spannable generateSpannableString(int value, String SizeStr) {
-        Spannable span = new SpannableString(value + SizeStr);
-        span.setSpan(
-                new RelativeSizeSpan(0.5f),
-                span.length() - SizeStr.length(),
-                span.length(),
-                Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
-        return span;
-    }
-
-    private Spannable generateWindInfo(String direct, int speed) {
-        return new SpannableStringBuilder(direct).append(generateSpannableString(speed, "m/s"));
     }
 
     private int getStatusBarHeight() {
