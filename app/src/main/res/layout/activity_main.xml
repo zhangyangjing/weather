@@ -1,105 +1,95 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout
+<android.support.v4.widget.SwipeRefreshLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/sr_refresh"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
-    tools:context=".ui.ActivityMain">
+    android:layout_height="match_parent">
 
-    <View
-        android:id="@+id/scrim"
+    <android.support.design.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:alpha="0.7"
-        android:background="@color/colorPrimaryDark"
-        android:visibility="gone"/>
+        android:fitsSystemWindows="true"
+        tools:context=".ui.ActivityMain">
 
-    <android.support.design.widget.AppBarLayout
-        android:id="@+id/app_bar"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/app_bar_height"
-        android:fitsSystemWindows="true">
-
-        <android.support.design.widget.CollapsingToolbarLayout
-            android:id="@+id/toolbar_layout"
+        <View
+            android:id="@+id/scrim"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:fitsSystemWindows="true"
-            android:paddingLeft="16dp"
-            android:paddingRight="16dp"
-            android:minHeight="?attr/actionBarSize"
-            app:layout_scrollFlags="snap|scroll|exitUntilCollapsed">
+            android:alpha="0.7"
+            android:background="@color/colorPrimaryDark"
+            android:visibility="gone"/>
 
-            <fragment
-                android:id="@+id/frg_districts"
-                android:name="com.zhangyangjing.weather.ui.fragment.FragmentDistricts"
-                android:layout_width="wrap_content"
-                android:layout_height="?attr/actionBarSize"
-                app:layout_collapseMode="pin"/>
+        <android.support.design.widget.AppBarLayout
+            android:id="@+id/app_bar"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/app_bar_height"
+            android:fitsSystemWindows="true">
 
-            <fragment
-                android:id="@+id/frg_search"
-                android:name="com.zhangyangjing.weather.ui.fragment.FragmentSearch"
+            <android.support.design.widget.CollapsingToolbarLayout
+                android:id="@+id/toolbar_layout"
                 android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                app:layout_collapseMode="pin"/>
+                android:layout_height="match_parent"
+                android:fitsSystemWindows="true"
+                android:minHeight="?attr/actionBarSize"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
+                app:layout_scrollFlags="snap|scroll|exitUntilCollapsed">
 
-        </android.support.design.widget.CollapsingToolbarLayout>
-    </android.support.design.widget.AppBarLayout>
+                <fragment
+                    android:id="@+id/frg_districts"
+                    android:name="com.zhangyangjing.weather.ui.fragment.FragmentDistricts"
+                    android:layout_width="wrap_content"
+                    android:layout_height="?attr/actionBarSize"
+                    app:layout_collapseMode="pin"/>
 
-    <fragment
-        android:id="@+id/frg_now"
-        android:name="com.zhangyangjing.weather.ui.fragment.FragmentNow"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_collapseMode="pin"/>
+                <fragment
+                    android:id="@+id/frg_search"
+                    android:name="com.zhangyangjing.weather.ui.fragment.FragmentSearch"
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/actionBarSize"
+                    app:layout_collapseMode="pin"/>
 
-    <android.support.v4.widget.NestedScrollView
-        android:id="@+id/sc_list"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+            </android.support.design.widget.CollapsingToolbarLayout>
+        </android.support.design.widget.AppBarLayout>
 
-        <LinearLayout
+        <fragment
+            android:id="@+id/frg_now"
+            android:name="com.zhangyangjing.weather.ui.fragment.FragmentNow"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            app:layout_collapseMode="pin"/>
 
-            <fragment
-                android:id="@+id/frg_hourly"
-                android:name="com.zhangyangjing.weather.ui.fragment.FragmentHourly"
+        <android.support.v4.widget.NestedScrollView
+            android:id="@+id/sc_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
-            <fragment
-                android:id="@+id/frg_daily"
-                android:name="com.zhangyangjing.weather.ui.fragment.FragmentDaily"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+                <fragment
+                    android:id="@+id/frg_hourly"
+                    android:name="com.zhangyangjing.weather.ui.fragment.FragmentHourly"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
 
-            <!--<fragment-->
+                <fragment
+                    android:id="@+id/frg_daily"
+                    android:name="com.zhangyangjing.weather.ui.fragment.FragmentDaily"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+
+                <!--<fragment-->
                 <!--android:id="@+id/frg_tide"-->
                 <!--android:name="com.zhangyangjing.weather.ui.fragment.FragmentDistricts"-->
                 <!--android:layout_width="match_parent"-->
                 <!--android:layout_height="wrap_content"/>-->
-
-            <Button
-                android:id="@+id/btn_test_sync"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="50dp"
-                android:layout_marginTop="300dp"
-                android:text="Sync"/>
-
-            <Button
-                android:id="@+id/btn_test_query"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="150dp"
-                android:layout_marginTop="300dp"
-                android:text="Query"/>
-        </LinearLayout>
-    </android.support.v4.widget.NestedScrollView>
-</android.support.design.widget.CoordinatorLayout>
+            </LinearLayout>
+        </android.support.v4.widget.NestedScrollView>
+    </android.support.design.widget.CoordinatorLayout>
+</android.support.v4.widget.SwipeRefreshLayout>
