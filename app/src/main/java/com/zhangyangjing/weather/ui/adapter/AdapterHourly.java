@@ -9,7 +9,7 @@ import com.zhangyangjing.weather.R;
 import com.zhangyangjing.weather.provider.weather.WeatherContract;
 import com.zhangyangjing.weather.ui.fragment.FragmentHourly;
 import com.zhangyangjing.weather.ui.widget.StyleTextView;
-import com.zhangyangjing.weather.util.CursorUtil;
+import com.zhangyangjing.weather.util.DbUtil;
 import com.zhangyangjing.weather.util.WeatherUtil;
 
 import butterknife.BindView;
@@ -36,10 +36,10 @@ public class AdapterHourly extends RecyclerView.Adapter<AdapterHourly.MyViewHold
     public void onBindViewHolder(MyViewHolder holder, int position) {
         mCursor.moveToPosition(position);
 
-        String date = CursorUtil.getString(mCursor, WeatherContract.WeatherHourly.DATE);
-        int temp = CursorUtil.getInt(mCursor, WeatherContract.WeatherHourly.TMP);
-        String wdir = CursorUtil.getString(mCursor, WeatherContract.WeatherHourly.WDIR);
-        int wspd = CursorUtil.getInt(mCursor, WeatherContract.WeatherHourly.WSPD);
+        String date = DbUtil.getString(mCursor, WeatherContract.WeatherHourly.DATE);
+        int temp = DbUtil.getInt(mCursor, WeatherContract.WeatherHourly.TMP);
+        String wdir = DbUtil.getString(mCursor, WeatherContract.WeatherHourly.WDIR);
+        int wspd = DbUtil.getInt(mCursor, WeatherContract.WeatherHourly.WSPD);
 
         holder.tvTime.setText(date.split(" ")[1]);
         holder.tvTemp.setText(temp + "°");

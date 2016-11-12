@@ -20,14 +20,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Interpolator;
-import android.widget.LinearLayout;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.zhangyangjing.weather.R;
 import com.zhangyangjing.weather.provider.weather.WeatherContract;
 import com.zhangyangjing.weather.provider.weather.WeatherContract.WeatherNow;
 import com.zhangyangjing.weather.settings.SettingsUtil;
-import com.zhangyangjing.weather.util.CursorUtil;
+import com.zhangyangjing.weather.util.DbUtil;
 import com.zhangyangjing.weather.util.Utils;
 import com.zhangyangjing.weather.util.WeatherUtil;
 
@@ -50,7 +50,6 @@ public class FragmentNow extends Fragment implements LoaderManager.LoaderCallbac
 
     @BindView(R.id.tv_weather_icon) TextView mTvWeatherIcon;
     @BindView(R.id.tv_current_temp) TextView mTvCurrentTemp;
-    @BindView(R.id.tv_current_temp_metric) TextView mTvCurrentTempMetric;
     @BindView(R.id.tv_update_time) TextView mTvUpdateTime;
     //    @BindView(R.id.tv_temp_high) TextView mTvTempHight;
 //    @BindView(R.id.tv_temp_low) TextView mTvTempLow;
@@ -120,11 +119,11 @@ public class FragmentNow extends Fragment implements LoaderManager.LoaderCallbac
             public void onLayoutChange(View v, int left, int top, int right, int bottom,
                                        int oldLeft, int oldTop, int oldRight, int oldBottom) {
 
-                LinearLayout.LayoutParams params = (LinearLayout.LayoutParams)
-                        mVgWeatherInfo.getLayoutParams();
-                params.setMargins(0, mActionBarHeight, 0, 0);
+//                LinearLayout.LayoutParams params = (LinearLayout.LayoutParams)
+//                        mVgWeatherInfo.getLayoutParams();
+//                params.setMargins(0, mActionBarHeight, 0, 0);
                 mWeatherInfoMarginTop = mActionBarHeight;
-                mWeatherInfoBottom = mVgWeatherInfo.getBottom() + mActionBarHeight;
+                mWeatherInfoBottom = mVgWeatherInfo.getBottom() + mActionBarHeight + mStatusBarHeight;
                 v.removeOnLayoutChangeListener(this);
 
                 mTargetWeatherX = calculateWeatherInfoTargetX();
@@ -165,28 +164,30 @@ public class FragmentNow extends Fragment implements LoaderManager.LoaderCallbac
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
         cursor.moveToFirst();
-        int humidity = CursorUtil.getInt(cursor, WeatherNow.HUM);
-        int windSpeed = CursorUtil.getInt(cursor, WeatherNow.WSPD);
-        String windDir = CursorUtil.getString(cursor, WeatherNow.WDIR);
-        int temp = CursorUtil.getInt(cursor, WeatherNow.TMP);
-        int feelLike = CursorUtil.getInt(cursor, WeatherNow.FL);
-        int pm25 = CursorUtil.getInt(cursor, WeatherNow.PM25);
-        int pm10 = CursorUtil.getInt(cursor, WeatherNow.PM10);
-        int aqi =  CursorUtil.getInt(cursor, WeatherNow.AQI);
-        int visibility = CursorUtil.getInt(cursor, WeatherNow.VIS);
-        int cond = CursorUtil.getInt(cursor, WeatherNow.COND);
-        String uv = CursorUtil.getString(cursor, WeatherNow.UV);
+        String date = DbUtil.getString(cursor, WeatherNow.DATE);
+        int humidity = DbUtil.getInt(cursor, WeatherNow.HUM);
+        int windSpeed = DbUtil.getInt(cursor, WeatherNow.WSPD);
+        String windDir = DbUtil.getString(cursor, WeatherNow.WDIR);
+        int temp = DbUtil.getInt(cursor, WeatherNow.TMP);
+        int feelLike = DbUtil.getInt(cursor, WeatherNow.FL);
+        int pm25 = DbUtil.getInt(cursor, WeatherNow.PM25);
+        int pm10 = DbUtil.getInt(cursor, WeatherNow.PM10);
+        int aqi = DbUtil.getInt(cursor, WeatherNow.AQI);
+        int visibility = DbUtil.getInt(cursor, WeatherNow.VIS);
+        int cond = DbUtil.getInt(cursor, WeatherNow.COND);
+        String uv = DbUtil.getString(cursor, WeatherNow.UV);
 
         Spannable wind = WeatherUtil.spannableMetricString(windSpeed, "m/s");
         mTvWind.setText(new SpannableStringBuilder(windDir).append(wind));
         mTvHumidity.setText(WeatherUtil.spannableMetricString(humidity, "%"));
         mTvVisibility.setText(WeatherUtil.spannableMetricString(visibility, "KM"));
-        mTvCurrentTemp.setText(temp + "");
+        mTvCurrentTemp.setText(temp + "° ");
         mTvFellLike.setText(feelLike + "°");
         mTvPm10.setText(pm10 + "");
         mTvPm25.setText(pm25 + "");
         mTvAqi.setText(aqi + "");
         mTvUv.setText(uv);
+        mTvUpdateTime.setText(Utils.formateUpdateTime(date));
         mTvWeatherIcon.setText(WeatherUtil.cond2icon(cond));
     }
 
@@ -199,6 +200,7 @@ public class FragmentNow extends Fragment implements LoaderManager.LoaderCallbac
         mDistrictRight = right;
         if (0 != mTargetWeatherX)
             mTargetWeatherInfoTranslationX = right - mTargetWeatherX;
+        mTvUpdateTime.setTranslationX(right);
     }
 
     void updateBottom(int bottom) {
@@ -208,34 +210,35 @@ public class FragmentNow extends Fragment implements LoaderManager.LoaderCallbac
     }
 
     private void updateWeatherInfo(int bottom) {
-        float dCurrentTempTextSize = mCurrentTempTextSize - mTargetCurrentTempTextSize;
-        float dWeatherIconTextSize = mWeatherIconTextSize - mTargetWeatherIconTextSize;
-        float dWeatherInfoMarginTop = mWeatherInfoMarginTop - mTargetWeatherInfoMarginTop;
 
         if (bottom <= mWeatherInfoBottom) {
+
             float rate = (mWeatherInfoBottom - bottom) /
                     (float) (mWeatherInfoBottom - mStatusBarHeight - mActionBarHeight);
-//            rate = 1 - rate;
             rate = 1 - mInterpolator.getInterpolation(rate);
+
+            float dCurrentTempTextSize = mCurrentTempTextSize - mTargetCurrentTempTextSize;
+            float dWeatherIconTextSize = mWeatherIconTextSize - mTargetWeatherIconTextSize;
+            float dWeatherInfoMarginTop = mWeatherInfoMarginTop - mTargetWeatherInfoMarginTop;
 
             float currentTempTextSize = mTargetCurrentTempTextSize + dCurrentTempTextSize * rate;
             float weatherIconTextSize = mTargetWeatherIconTextSize + dWeatherIconTextSize * rate;
             float weatherInfoMarginTop = mTargetWeatherInfoMarginTop + dWeatherInfoMarginTop * rate;
             float weatherInfoTranslationX = mTargetWeatherInfoTranslationX * (1 - rate);
 
-            mTvCurrentTempMetric.setTextSize(TypedValue.COMPLEX_UNIT_PX, currentTempTextSize);
+            mTvUpdateTime.setAlpha(Math.max(rate - 0.2f, 0));
             mTvCurrentTemp.setTextSize(TypedValue.COMPLEX_UNIT_PX, currentTempTextSize);
             mTvWeatherIcon.setTextSize(TypedValue.COMPLEX_UNIT_PX, weatherIconTextSize);
             mVgWeatherInfo.setTranslationX(weatherInfoTranslationX);
-            LinearLayout.LayoutParams params = (LinearLayout.LayoutParams)
+            FrameLayout.LayoutParams params = (FrameLayout.LayoutParams)
                     mVgWeatherInfo.getLayoutParams();
             params.setMargins(0, (int) weatherInfoMarginTop, 0, 0);
         } else {
+            mTvUpdateTime.setAlpha(1.0f);
             mTvCurrentTemp.setTextSize(TypedValue.COMPLEX_UNIT_PX, mCurrentTempTextSize);
-            mTvCurrentTempMetric.setTextSize(TypedValue.COMPLEX_UNIT_PX, mCurrentTempTextSize);
             mTvWeatherIcon.setTextSize(TypedValue.COMPLEX_UNIT_PX, mWeatherIconTextSize);
             mVgWeatherInfo.setTranslationX(0);
-            LinearLayout.LayoutParams params = (LinearLayout.LayoutParams)
+            FrameLayout.LayoutParams params = (FrameLayout.LayoutParams)
                     mVgWeatherInfo.getLayoutParams();
             params.setMargins(0, mWeatherInfoMarginTop, 0, 0);
         }
@@ -274,7 +277,6 @@ public class FragmentNow extends Fragment implements LoaderManager.LoaderCallbac
         float iconSize = mTvWeatherIcon.getTextSize();
 
         mTvCurrentTemp.setTextSize(TypedValue.COMPLEX_UNIT_PX, mTargetCurrentTempTextSize);
-        mTvCurrentTempMetric.setTextSize(TypedValue.COMPLEX_UNIT_PX, mTargetCurrentTempTextSize);
         mTvWeatherIcon.setTextSize(TypedValue.COMPLEX_UNIT_PX, mTargetWeatherIconTextSize);
         mVgWeatherInfo.measure(
                 View.MeasureSpec.makeMeasureSpec(getView().getWidth(), View.MeasureSpec.AT_MOST),
@@ -283,7 +285,6 @@ public class FragmentNow extends Fragment implements LoaderManager.LoaderCallbac
         int targetWeatherX = (getView().getWidth() - targetWidth) / 2;
 
         mTvCurrentTemp.setTextSize(TypedValue.COMPLEX_UNIT_PX, tempSize);
-        mTvCurrentTempMetric.setTextSize(TypedValue.COMPLEX_UNIT_PX, tempSize);
         mTvWeatherIcon.setTextSize(TypedValue.COMPLEX_UNIT_PX, iconSize);
 
         return targetWeatherX;

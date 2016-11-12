@@ -18,6 +18,7 @@ import com.google.gson.Gson;
 import com.zhangyangjing.weather.sync.heweather.model.DailyForecast;
 import com.zhangyangjing.weather.sync.heweather.model.HeWeatherData;
 import com.zhangyangjing.weather.sync.heweather.model.HourlyForecast;
+import com.zhangyangjing.weather.util.DbUtil;
 
 import java.util.ArrayList;
 import java.util.Set;
@@ -181,11 +182,13 @@ public class WeatherProvider extends ContentProvider {
     private Cursor doQueryWeatherNow(String city) {
         MatrixCursor cursor = new MatrixCursor(WeatherContract.WeatherNow.getColumns());
         HeWeatherData data = getWeatherData(city);
-        if (null == data)
+        String date = getUpdateTime(city);
+        if (null == data || null == date)
             return cursor;
 
         cursor.addRow(new String[]{
                 city,
+                date,
                 data.aqi.city.aqi,
                 data.aqi.city.co,
                 data.aqi.city.no2,
@@ -265,8 +268,25 @@ public class WeatherProvider extends ContentProvider {
             return null;
 
         cursor.moveToFirst();
-        String dataStr = cursor.getString(cursor.getColumnIndex(WeatherContract.Weather.DATA));
+        String dataStr = DbUtil.getString(cursor, WeatherContract.Weather.DATA);
         return new Gson().fromJson(dataStr, HeWeatherData.class);
+    }
+
+    private String getUpdateTime(String city) {
+        Cursor cursor = mOpenHelper.getReadableDatabase().query(
+                WeatherUriEnum.WEATHER.table,
+                new String[]{WeatherContract.Weather.DATE},
+                WeatherContract.Weather._ID + "=?",
+                new String[]{city},
+                null,
+                null,
+                null);
+
+        if (0 == cursor.getCount())
+            return null;
+
+        cursor.moveToFirst();
+        return DbUtil.getString(cursor, WeatherContract.Weather.DATE);
     }
 
     private String translateUv(String uvStr) {

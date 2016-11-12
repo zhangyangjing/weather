@@ -5,57 +5,50 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:fitsSystemWindows="true"
-    android:orientation="vertical"
     android:gravity="center_horizontal"
+    android:orientation="vertical"
     tools:context="com.zhangyangjing.weather.ui.fragment.FragmentNow">
 
-    <RelativeLayout
-        android:id="@+id/vg_weather_info"
-        android:layout_width="wrap_content"
+    <FrameLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content">
-
-        <com.zhangyangjing.weather.ui.widget.StyleTextView
-            android:id="@+id/tv_current_temp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="9"
-            android:textSize="80sp"
-            auto:style="OswaldRegular"/>
-
-        <com.zhangyangjing.weather.ui.widget.StyleTextView
-            android:id="@+id/tv_current_temp_metric"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toRightOf="@id/tv_current_temp"
-            android:text="°"
-            android:textSize="80sp"
-            auto:style="OswaldRegular"/>
 
         <com.zhangyangjing.weather.ui.widget.StyleTextView
             android:id="@+id/tv_update_time"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignBottom="@id/tv_current_temp"
-            android:layout_toRightOf="@id/tv_current_temp"
-            android:paddingBottom="20dp"
-            android:paddingLeft="8dp"
+            android:layout_height="?attr/actionBarSize"
+            android:gravity="center_vertical"
             android:text="update: 3min ago"
-            android:visibility="gone"
-            android:textSize="9sp"
+            android:textSize="12sp"
             auto:style="OswaldLight"/>
 
-        <com.zhangyangjing.weather.ui.widget.StyleTextView
-            android:id="@+id/tv_weather_icon"
+        <RelativeLayout
+            android:id="@+id/vg_weather_info"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toRightOf="@id/tv_current_temp_metric"
-            android:layout_centerVertical="true"
-            android:layout_weight="1.0"
-            android:gravity="center_vertical"
-            android:text="\uf004"
-            android:textSize="35sp"
-            auto:style="WeatherIcons"/>
-    </RelativeLayout>
+            android:layout_gravity="center_horizontal"
+            android:layout_height="wrap_content">
+
+            <com.zhangyangjing.weather.ui.widget.StyleTextView
+                android:id="@+id/tv_current_temp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="9"
+                android:textSize="80sp"
+                auto:style="OswaldRegular"/>
+
+            <com.zhangyangjing.weather.ui.widget.StyleTextView
+                android:id="@+id/tv_weather_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toRightOf="@id/tv_current_temp"
+                android:layout_weight="1.0"
+                android:gravity="center_vertical"
+                android:text="\uf004"
+                android:textSize="35sp"
+                auto:style="WeatherIcons"/>
+        </RelativeLayout>
+    </FrameLayout>
 
 
     <!--<LinearLayout-->

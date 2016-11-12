@@ -33,6 +33,7 @@ public class WeatherDatabase extends SQLiteOpenHelper {
         db.execSQL("CREATE TABLE " + Tables.WEATHER + " ("
                 + WeatherContract.Weather._ID + " TEXT PRIMARY KEY,"
                 + WeatherContract.Weather.DATA + " TEXT,"
+                + WeatherContract.Weather.DATE + " TEXT,"
                 + "UNIQUE (" + WeatherContract.Weather._ID + ") ON CONFLICT REPLACE)");
     }
 

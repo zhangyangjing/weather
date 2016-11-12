@@ -25,9 +25,9 @@ public class DottedLineView extends View {
         mPaint = new Paint();
         mPaint.setStyle(Paint.Style.STROKE);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
-            mPaint.setColor(getResources().getColor(R.color.dotted_line, null));
+            mPaint.setColor(getResources().getColor(R.color.dottedLine, null));
         else
-            mPaint.setColor(getResources().getColor(R.color.dotted_line));
+            mPaint.setColor(getResources().getColor(R.color.dottedLine));
         mPaint.setStrokeWidth(20);
 
         mPath = new Path();

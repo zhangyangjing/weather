@@ -9,7 +9,7 @@ import com.zhangyangjing.weather.R;
 import com.zhangyangjing.weather.provider.weather.WeatherContract.WeatherDaily;
 import com.zhangyangjing.weather.ui.widget.LineChartView;
 import com.zhangyangjing.weather.ui.widget.StyleTextView;
-import com.zhangyangjing.weather.util.CursorUtil;
+import com.zhangyangjing.weather.util.DbUtil;
 import com.zhangyangjing.weather.util.WeatherUtil;
 
 import java.text.DateFormat;
@@ -38,11 +38,11 @@ public class AdapterDaily extends RecyclerView.Adapter<AdapterDaily.MyViewHolder
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
         mCursor.moveToPosition(position);
-        String date = CursorUtil.getString(mCursor, WeatherDaily.DATE);
+        String date = DbUtil.getString(mCursor, WeatherDaily.DATE);
         holder.mTvWeek.setText(date2week(date));
         holder.mTvDate.setText(date.split("-")[2] + "/" + date.split("-")[1]);
         holder.mTvIcon.setText(WeatherUtil.cond2icon(
-                CursorUtil.getInt(mCursor, WeatherDaily.CONDD)));
+                DbUtil.getInt(mCursor, WeatherDaily.CONDD)));
 
         int temp[] = getTemp(position);
         int nextTemp[] = mCursor.getCount() - 1 == position ? temp : getTemp(position + 1);
@@ -70,14 +70,16 @@ public class AdapterDaily extends RecyclerView.Adapter<AdapterDaily.MyViewHolder
     private int[] getTemp(int index) {
         mCursor.moveToPosition(index);
         return new int[]{
-                CursorUtil.getInt(mCursor, WeatherDaily.TMPL),
-                CursorUtil.getInt(mCursor, WeatherDaily.TMPH)};
+                DbUtil.getInt(mCursor, WeatherDaily.TMPL),
+                DbUtil.getInt(mCursor, WeatherDaily.TMPH)};
     }
 
     private void updateLimit() {
+        if (null == mCursor)
+            return;
+
         mMinTemp = Integer.MAX_VALUE;
         mMaxTemp = Integer.MIN_VALUE;
-
         for (int i = 0; i < mCursor.getCount(); i++) {
             int[] temp = getTemp(i);
             if (temp[0] < mMinTemp)

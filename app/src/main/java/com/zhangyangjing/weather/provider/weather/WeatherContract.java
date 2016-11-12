@@ -45,9 +45,11 @@ public class WeatherContract {
 
     interface WeatherColumns extends BaseColumns {
         String DATA = "data";
+        String DATE = "date";
     }
 
     interface WeatherNowColumns extends BaseColumns {
+        String DATE = "date";
         String AQI = "aqi";
         String CO = "co";
         String NO2 = "no2";
@@ -144,6 +146,7 @@ public class WeatherContract {
         public static String[] getColumns() {
             return new String[]{
                     _ID,
+                    DATE,
                     AQI,
                     CO,
                     NO2,

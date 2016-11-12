@@ -6,8 +6,10 @@ import android.content.ContentValues;
 import com.google.gson.Gson;
 import com.zhangyangjing.weather.provider.weather.WeatherContract;
 import com.zhangyangjing.weather.sync.heweather.model.HeWeatherData;
+import com.zhangyangjing.weather.util.DbUtil;
 
 import java.io.IOException;
+import java.util.Calendar;
 
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
@@ -26,6 +28,7 @@ public class Heweather {
             ContentValues contentValues = new ContentValues();
             contentValues.put(WeatherContract.Weather._ID, city);
             contentValues.put(WeatherContract.Weather.DATA, new Gson().toJson(data));
+            contentValues.put(WeatherContract.Weather.DATE, DbUtil.date2str(Calendar.getInstance()));
             resolver.insert(WeatherContract.Weather.CONTENT_URI, contentValues);
         } catch (IOException e) {
             e.printStackTrace();

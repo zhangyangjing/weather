@@ -73,16 +73,19 @@
                 android:orientation="vertical">
 
                 <fragment
-                    android:id="@+id/frg_hourly"
-                    android:name="com.zhangyangjing.weather.ui.fragment.FragmentHourly"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"/>
-
-                <fragment
                     android:id="@+id/frg_daily"
                     android:name="com.zhangyangjing.weather.ui.fragment.FragmentDaily"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"/>
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/activity_vertical_margin"/>
+
+                <fragment
+                    android:id="@+id/frg_hourly"
+                    android:name="com.zhangyangjing.weather.ui.fragment.FragmentHourly"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/activity_vertical_margin"
+                    android:layout_marginTop="@dimen/activity_vertical_margin"/>
 
                 <!--<fragment-->
                 <!--android:id="@+id/frg_tide"-->
