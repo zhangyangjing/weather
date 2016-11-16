@@ -9,6 +9,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,6 +33,7 @@ import com.zhangyangjing.weather.settings.SettingsUtil;
 import com.zhangyangjing.weather.util.DbUtil;
 
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.joda.time.DurationFieldType;
 import org.joda.time.Interval;
 import org.joda.time.format.DateTimeFormat;
@@ -58,7 +60,8 @@ public class FragmentTide extends Fragment implements OnChartValueSelectedListen
     @BindView(R.id.chart) LineChart mChart;
 
     private MyLoaderCallback mLoaderCallback;
-    private DateTimeFormatter mFormatter = DateTimeFormat.forPattern("MM/dd HH:mm");
+    private DateTimeFormatter mFormatter = DateTimeFormat.forPattern("MM/dd HH:mm")
+            .withZone(DateTimeZone.forID("Asia/Shanghai"));
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -150,6 +153,11 @@ public class FragmentTide extends Fragment implements OnChartValueSelectedListen
         Interval todayInterval = new Interval(today, today.withFieldAdded(DurationFieldType.days(), 1));
         Interval yesterdayInterval = new Interval(today.withFieldAdded(DurationFieldType.days(), -1), today);
         Interval tomorrowInterval = new Interval(today.withFieldAdded(DurationFieldType.days(), 1), today.withFieldAdded(DurationFieldType.days(), 2));
+
+        DateTime dateTime = new DateTime();
+        long tt = dateTime.toDate().getTime();
+        Log.v(TAG, "time:" + mFormatter.print(tt));
+
 
         if (todayInterval.contains(time)) {
             return "Tod " + mFormatter.print(time).split(" ")[1];
