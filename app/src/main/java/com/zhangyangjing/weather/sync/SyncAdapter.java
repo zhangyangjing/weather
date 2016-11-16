@@ -10,6 +10,11 @@ import android.util.Log;
 
 import com.zhangyangjing.weather.settings.SettingsUtil;
 import com.zhangyangjing.weather.sync.heweather.Heweather;
+import com.zhangyangjing.weather.sync.tide.Tide;
+
+import org.joda.time.DateTime;
+import org.joda.time.DurationFieldType;
+import org.joda.time.Interval;
 
 /**
  * Created by zhangyangjing on 03/11/2016.
@@ -34,8 +39,18 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
                 + authority + "], contentProviderClient = ["
                 + contentProviderClient + "], syncResult = ["
                 + syncResult + "]");
-       
+
         String city = SettingsUtil.getCurrentCity(mContext);
         Heweather.sync(mContext.getContentResolver(), city);
+
+
+        Interval interval = new Interval(
+                DateTime.now().withFieldAdded(DurationFieldType.days(), -1),
+                DateTime.now().withFieldAdded(DurationFieldType.days(), 3));
+        try {
+            Tide.sync(mContext.getContentResolver(), city, interval);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

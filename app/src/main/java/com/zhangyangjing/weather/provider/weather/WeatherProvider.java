@@ -83,6 +83,14 @@ public class WeatherProvider extends ContentProvider {
                         WeatherContract.WeatherDaily.buildObserveUri(city));
                 return cursor;
             }
+            case TIDE: {
+                String city = WeatherContract.Tide.getCityId(uri);
+                Cursor cursor = doQueryWeatherTides(city, projection, selection, selectionArgs, sortOrder);
+                cursor.setNotificationUri(getContext().getContentResolver(),
+                        WeatherContract.Tide.buildObserveUri(city));
+                return cursor;
+
+            }
             default:
                 return null;
         }
@@ -109,7 +117,7 @@ public class WeatherProvider extends ContentProvider {
 
         switch (weatherUriEnum) {
             case WEATHER:
-                Log.v(TAG, "notifychange on:" + WeatherContract.Weather.buildObserveUri(
+                if (DEBUG) Log.v(TAG, "notifychange on:" + WeatherContract.Weather.buildObserveUri(
                         values.getAsString(WeatherContract.Weather._ID)));
                 getContext().getContentResolver().notifyChange(
                         WeatherContract.Weather.buildObserveUri(
@@ -119,6 +127,12 @@ public class WeatherProvider extends ContentProvider {
             case CITY:
                 return WeatherContract.City.buildCityUri(
                         values.getAsString(WeatherContract.City._ID));
+            case TIDE_WRITE:
+                getContext().getContentResolver().notifyChange(
+                        WeatherContract.Tide.buildObserveUri(
+                                values.getAsString(WeatherContract.Tide._ID)), null);
+                return WeatherContract.Tide.buildQueryUri(
+                        values.getAsString(WeatherContract.Tide._ID));
         }
         return null;
     }
@@ -158,9 +172,11 @@ public class WeatherProvider extends ContentProvider {
                 + projection + "], selection = [" + selection + "], selectionArgs = ["
                 + selectionArgs + "], sortOrder = [" + sortOrder + "], filter = [" + filter + "]");
 
-        synchronized (this) {
-            if (null == mCityFilter)
-                mCityFilter = new CityFilter(getContext());
+        if (null == mCityFilter) {
+            synchronized (this) {
+                if (null == mCityFilter)
+                    mCityFilter = new CityFilter(getContext());
+            }
         }
 
         if (TextUtils.isEmpty(filter))
@@ -251,6 +267,19 @@ public class WeatherProvider extends ContentProvider {
                     forecast.wind.deg});
         }
 
+        return cursor;
+    }
+
+    private Cursor doQueryWeatherTides(String city, String[] projection, String selection,
+                        String[] selectionArgs, String sortOrder) {
+        Cursor cursor = mOpenHelper.getReadableDatabase().query(
+                WeatherUriEnum.TIDE.table,
+                projection,
+                selection,
+                selectionArgs,
+                null,
+                null,
+                sortOrder);
         return cursor;
     }
 

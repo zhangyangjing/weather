@@ -91,6 +91,35 @@ public class WeatherContract {
         String WDEG = "wind_deg"; // 风向(角度)
     }
 
+    interface TideColumns extends BaseColumns {
+        String DATE = "data";
+        String HEIGHT = "height";
+    }
+
+    public static class Tide implements TideColumns {
+        public static final String PATH = "tides";
+        public static final String CONTENT_TYPE_ID = "tide";
+        public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(PATH).build();
+
+        public static Uri buildObserveUri(String city) {
+            return CONTENT_URI.buildUpon()
+                    .appendEncodedPath(city)
+                    .build();
+        }
+
+        public static Uri buildQueryUri(String city) {
+            return City.CONTENT_URI.buildUpon()
+                    .appendEncodedPath(city)
+                    .appendEncodedPath(Weather.PATH)
+                    .appendPath("tide")
+                    .build();
+        }
+
+        public static String getCityId(Uri uri) {
+            return uri.getPathSegments().get(1);
+        }
+    }
+
     public static class City implements CityColumns {
         public static final String PATH = "cities";
         public static final String CONTENT_TYPE_ID = "city";

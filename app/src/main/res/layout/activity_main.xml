@@ -84,14 +84,15 @@
                     android:name="com.zhangyangjing.weather.ui.fragment.FragmentHourly"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/activity_vertical_margin"
                     android:layout_marginTop="@dimen/activity_vertical_margin"/>
 
-                <!--<fragment-->
-                <!--android:id="@+id/frg_tide"-->
-                <!--android:name="com.zhangyangjing.weather.ui.fragment.FragmentDistricts"-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="wrap_content"/>-->
+                <fragment
+                    android:id="@+id/frg_tide"
+                    android:name="com.zhangyangjing.weather.ui.fragment.FragmentTide"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/activity_vertical_margin"
+                    android:layout_marginTop="@dimen/activity_vertical_margin"/>
             </LinearLayout>
         </android.support.v4.widget.NestedScrollView>
     </android.support.design.widget.CoordinatorLayout>

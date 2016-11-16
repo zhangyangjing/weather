@@ -163,6 +163,9 @@ public class FragmentNow extends Fragment implements LoaderManager.LoaderCallbac
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
+        if (0 >= cursor.getCount())
+            return;
+
         cursor.moveToFirst();
         String date = DbUtil.getString(cursor, WeatherNow.DATE);
         int humidity = DbUtil.getInt(cursor, WeatherNow.HUM);

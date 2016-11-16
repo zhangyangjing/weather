@@ -21,6 +21,10 @@ public class DbUtil {
         return cursor.getInt(cursor.getColumnIndex(keyName));
     }
 
+    public static long getLong(Cursor cursor, String keyName) {
+        return cursor.getLong(cursor.getColumnIndex(keyName));
+    }
+
     public static String date2str(Calendar calendar) {
         return sIso8601Format.format(calendar.getTime());
     }
