@@ -9,6 +9,8 @@ import android.content.SyncStatusObserver;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
+import android.support.design.widget.AppBarLayout;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
@@ -28,7 +30,8 @@ import butterknife.ButterKnife;
 
 public class ActivityMain extends AppCompatActivity implements
         FragmentSearch.SearchListener, FragmentDistricts.FragmentDistricsListener,
-        SwipeRefreshLayout.OnRefreshListener, SyncStatusObserver {
+        SwipeRefreshLayout.OnRefreshListener, SyncStatusObserver,
+        NestedScrollView.OnScrollChangeListener, AppBarLayout.OnOffsetChangedListener {
     private static final String TAG = ActivityMain.class.getSimpleName();
     private static final boolean DEBUG = true;
 
@@ -36,8 +39,13 @@ public class ActivityMain extends AppCompatActivity implements
     private FragmentSearch mFrgSearch;
     private Object mSyncStatusHandler;
 
+    private int mScrollViewOffset;
+    private int mAppbarOffset;
+
     @BindView(R.id.scrim) View mScrim;
     @BindView(R.id.sr_refresh) SwipeRefreshLayout mRefresh;
+    @BindView(R.id.sc_list) NestedScrollView mScrollView;
+    @BindView(R.id.app_bar) AppBarLayout mAppbar;
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -48,7 +56,9 @@ public class ActivityMain extends AppCompatActivity implements
 
         mFrgSearch = (FragmentSearch) getSupportFragmentManager().findFragmentById(R.id.frg_search);
         mFrgNow = (FragmentNow) getSupportFragmentManager().findFragmentById(R.id.frg_now);
+        mScrollView.setOnScrollChangeListener(this);
         mRefresh.setOnRefreshListener(this);
+        mAppbar.addOnOffsetChangedListener(this);
     }
 
     @Override
@@ -138,5 +148,21 @@ public class ActivityMain extends AppCompatActivity implements
                 mRefresh.setRefreshing(refreshing);
             }
         });
+    }
+
+    @Override
+    public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
+        mScrollViewOffset = scrollY;
+        updateRefresh();
+    }
+
+    @Override
+    public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+        mAppbarOffset = verticalOffset;
+        updateRefresh();
+    }
+
+    private void updateRefresh() {
+        mRefresh.setEnabled(0 >= mScrollViewOffset && 0 <= mAppbarOffset);
     }
 }
